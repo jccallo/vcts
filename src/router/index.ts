@@ -1,23 +1,13 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
 import Module from '@/Module.vue'
-import HelloWorld from '@/components/HelloWorld.vue'
-import HelloWorld2 from '@/components/HelloWorld2.vue'
+import SaleRoutes from '@/modules/sale/routes';
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/app',
     component: Module,
     children: [
-      {
-        path: "",
-        name: 'HelloWorld',
-        component: HelloWorld,
-      },
-      {
-        path: "hello",
-        name: "hello",
-        component: HelloWorld2,
-      },
+      ...SaleRoutes,
     ]
   },
   {
