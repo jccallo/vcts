@@ -1,13 +1,15 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
 import Module from '@/Module.vue'
-import SaleRoutes from '@/modules/sale/routes';
+import SalesRoutes from '@/modules/sales/routes';
+import CustomersRoutes from '@/modules/customers/routes'
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/app',
     component: Module,
     children: [
-      ...SaleRoutes,
+      ...SalesRoutes,
+      ...CustomersRoutes,
     ]
   },
   {

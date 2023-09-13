@@ -8,12 +8,12 @@ const routes = [
     children: [
       {
         path: '',
-        name: 'sale.index',
+        name: 'sales.index',
         component: Index,
       },
       {
         path: 'create',
-        name: 'sale.create',
+        name: 'sales.create',
         component: Create,
       },
     ],

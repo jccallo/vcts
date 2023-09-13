@@ -1,46 +1,43 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
-import useCreate from '../composables/use.create'
+import { reactive, onMounted, watch } from 'vue';
+import { useCreate, useSales } from '../composables'
+import { Sale } from '../interfaces'
 
-const { create } = useCreate()
+const { create, getProfiles, profiles } = useCreate()
+const { customersPluck, cardsPluck, beneficiariesPluck, getCustomersPluck, getCardsPluck, getBeneficiariesPluck } = useSales()
 
-interface FormData {
-  branch_id: number | string
-  profile_id: number | string
-  authorization: string
-  customer_id: number | string
-  payment_method: string
-  card_id: number | string
-  amount: number | string
-  interest_free: string
-  installments: string
-  courtesy: string
-  beneficiary_id: number | string
-  retailer: string
-  certificates: string
-  observation?: string
-}
-
-const formData: FormData = reactive({
-  branch_id: '',
-  profile_id: '',
-  authorization: '',
-  customer_id: '',
-  payment_method: '',
-  card_id: '',
-  amount: '',
-  interest_free: '',
-  installments: '',
-  courtesy: '',
-  beneficiary_id: '',
-  retailer: '',
-  certificates: '',
+const formData = reactive<Sale>({
+  branch_id: null,
+  profile_id: null,
+  customer_id: null,
+  payment_method: null,
+  card_id: null,
+  interest_free: null,
+  installments: null,
+  courtesy: null,
+  beneficiary_id: null,
+  retailer: null,
+  certificates: null,
+  amount: null,
+  authorization: null,
   observation: ''
+})
+
+watch(() => formData.customer_id, async () => {
+  formData.card_id = null
+  if (!!formData.customer_id) await getCardsPluck(formData.customer_id)
 })
 
 const saleCreate = async () => {
   await create(formData)
 }
+
+onMounted(async () => {
+  await getProfiles()
+  await getBeneficiariesPluck()
+  await getCustomersPluck()
+  if (!!formData.customer_id) await getCardsPluck(formData.customer_id)
+})
 </script>
 
 <template>
@@ -102,16 +99,17 @@ const saleCreate = async () => {
 
                 <!-- Form Group -->
                 <div class="col-md-7 mb-3">
-                  <label class="small mb-1" for="saleprofile"
+                  <label class="small mb-1"
                     >Asesor o Agente</label
                   >
-                  <select class="form-select" id="saleprofile" v-model="formData.profile_id">
-                    <option selected disabled>Seleccionar:</option>
-                    <option value="1">Administrator</option>
-                    <option value="2">Registered</option>
-                    <option value="3">Editor</option>
-                    <option value="4">Guest</option>
-                  </select>
+                  <v-select
+                    class="style-chooser"
+                    placeholder="Seleccionar:"
+                    v-model="formData.profile_id"
+                    :options="profiles"
+                    :reduce="(profile: any) => profile.id"
+                    label="fullname"
+                  />
                 </div>
               </div>
 
@@ -132,14 +130,15 @@ const saleCreate = async () => {
 
                 <!-- Form Group -->
                 <div class="col-md-8 mb-3">
-                  <label class="small mb-1" for="saleccustomer">Cliente</label>
-                  <select class="form-select" id="saleccustomer"  v-model="formData.customer_id">
-                    <option selected disabled>Seleccionar:</option>
-                    <option value="1">Administrator</option>
-                    <option value="2">Registered</option>
-                    <option value="3">Editor</option>
-                    <option value="4">Guest</option>
-                  </select>
+                  <label class="small mb-1">Cliente</label>
+                  <v-select
+                    class="style-chooser"
+                    placeholder="Seleccionar:"
+                    v-model="formData.customer_id"
+                    :options="customersPluck"
+                    :reduce="(customer: any) => customer.id"
+                    label="fullname"
+                  />
                 </div>
               </div>
 
@@ -147,25 +146,28 @@ const saleCreate = async () => {
               <div class="row gx-3">
                 <!-- Form Group -->
                 <div class="col-md-4 mb-3">
-                  <label class="small mb-1" for="salepaymentmethod"
+                  <label class="small mb-1"
                     >Medio de Pago</label
                   >
-                  <select class="form-select" id="salepaymentmethod" v-model="formData.payment_method">
-                    <option selected disabled>Seleccionar:</option>
-                    <option value="Open Pay">Open Pay</option>
-                  </select>
+                  <v-select
+                    class="style-chooser"
+                    placeholder="Seleccionar:"
+                    v-model="formData.payment_method"
+                    :options="['Open Pay', 'Mercado Pago', 'Pago Efectivo', 'POS', 'Otros']"
+                  />
                 </div>
 
                 <!-- Form Group -->
                 <div class="col-md-8 mb-3">
-                  <label class="small mb-1" for="salecard">Tajeta</label>
-                  <select class="form-select" id="salecard" v-model="formData.card_id">
-                    <option selected disabled>Seleccionar:</option>
-                    <option value="1">Administrator</option>
-                    <option value="2">Registered</option>
-                    <option value="3">Editor</option>
-                    <option value="4">Guest</option>
-                  </select>
+                  <label class="small mb-1">Tajeta</label>
+                  <v-select
+                    class="style-chooser"
+                    placeholder="Seleccionar:"
+                    v-model="formData.card_id"
+                    :options="cardsPluck"
+                    :reduce="(card: any) => card.id"
+                    label="fullname"
+                  />
                 </div>
               </div>
 
@@ -184,24 +186,22 @@ const saleCreate = async () => {
                   >
                   <select class="form-select" id="saleinterestfree" v-model="formData.interest_free">
                     <option selected disabled>Seleccionar:</option>
-                    <option value="1">Si</option>
-                    <option value="0">No</option>
+                    <option value="Si">Si</option>
+                    <option value="No">No</option>
                   </select>
                 </div>
 
                 <!-- Form Group -->
                 <div class="col-md-4 mb-3">
-                  <label class="small mb-1" for="saleinstallments"
+                  <label class="small mb-1"
                     >Número de Cuotas</label
                   >
-                  <select class="form-select" id="saleinstallments" v-model="formData.installments">
-                    <option selected disabled>Seleccionar:</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
+                  <v-select
+                    class="style-chooser"
+                    placeholder="Seleccionar:"
+                    v-model="formData.installments"
+                    :options="Array.from({ length: 36 }, (_, index) => index + 1)"
+                  />
                 </div>
               </div>
 
@@ -212,23 +212,24 @@ const saleCreate = async () => {
                   <label class="small mb-1" for="salecourtesy">Cortesía</label>
                   <select class="form-select" id="salecourtesy" v-model="formData.courtesy">
                     <option selected disabled>Seleccionar:</option>
-                    <option value="1">Si</option>
-                    <option value="0">No</option>
+                    <option value="Si">Si</option>
+                    <option value="No">No</option>
                   </select>
                 </div>
 
                 <!-- Form Group -->
                 <div class="col-md-8 mb-3">
-                  <label class="small mb-1" for="salebeneficiary"
+                  <label class="small mb-1"
                     >Beneficiario</label
                   >
-                  <select class="form-select" id="salebeneficiary" v-model="formData.beneficiary_id">
-                    <option selected disabled>Seleccionar:</option>
-                    <option value="1">Administrator</option>
-                    <option value="2">Registered</option>
-                    <option value="3">Editor</option>
-                    <option value="4">Guest</option>
-                  </select>
+                  <v-select
+                    class="style-chooser"
+                    placeholder="Seleccionar:"
+                    v-model="formData.beneficiary_id"
+                    :options="beneficiariesPluck"
+                    :reduce="(beneficiary: any) => beneficiary.id"
+                    label="fullname"
+                  />
                 </div>
               </div>
 
@@ -236,28 +237,36 @@ const saleCreate = async () => {
               <div class="row gx-3">
                 <!-- Form Group -->
                 <div class="col-md-4 mb-3">
-                  <label class="small mb-1" for="saleretailer"
+                  <label class="small mb-1"
                     >Comercializadora</label
                   >
-                  <select class="form-select" id="saleretailer" v-model="formData.retailer">
-                    <option selected disabled>Seleccionar:</option>
-                    <option value="Visa International Club">Visa International Club</option>
-                    <option value="Otros">Otros</option>
-                  </select>
+                  <v-select
+                    class="style-chooser"
+                    placeholder="Seleccionar:"
+                    v-model="formData.retailer"
+                    :options="['Visa International Club', 'Otros']"
+                  />
                 </div>
 
                 <!-- Form Group -->
                 <div class="col-md-8 mb-3">
-                  <label class="small mb-1" for="salecertificates"
+                  <label class="small mb-1"
                     >Certificados</label
                   >
-                  <select class="form-select" id="salecertificates" v-model="formData.certificates">
-                    <option selected disabled>Seleccionar:</option>
-                    <option value="administrator">Administrator</option>
-                    <option value="registered">Registered</option>
-                    <option value="edtior">Editor</option>
-                    <option value="guest">Guest</option>
-                  </select>
+                  <v-select
+                    multiple
+                    class="style-chooser"
+                    placeholder="Seleccionar:"
+                    v-model="formData.certificates"
+                    :options="[
+                        '4 Certificados Nacionales',
+                        '3 Certificados Nacionales',
+                        '2 Certificados Nacionales',
+                        '1 Certificados Nacionales',
+                        '2 Certificados Internacionales',
+                        '1 Certificados Internacionales',
+                    ]"
+                  />
                 </div>
               </div>
 
@@ -265,19 +274,18 @@ const saleCreate = async () => {
               <div class="row gx-3">
                 <!-- Form Group -->
                 <div class="col-md-12 mb-3">
-                  <label class="small mb-1" for="saleobservation"
+                  <label class="small mb-1"
                     >Observaciones</label
                   >
                   <textarea
                     id="saleobservation"
                     class="lh-base form-control"
                     type="text"
-                    placeholder="Enter your post preview text..."
+                    placeholder="Escriba sus observaciones..."
                     rows="2"
                     v-model="formData.observation"
                   >
-Empower communities and energize engaging ideas; scale and impact do-gooders while disrupting industries. Venture philanthropy benefits corporations and people by moving the needle.</textarea
-                  >
+                  </textarea>
                 </div>
               </div>
 
@@ -286,10 +294,17 @@ Empower communities and energize engaging ideas; scale and impact do-gooders whi
                 Agregar venta
               </button>
             </form>
+
+            
+            {{ formData.profile_id }} {{ typeof formData.profile_id }} {{ formData.profile_id == 0? 'si': 'no' }}
+            <pre>{{ formData }} {{ formData.customer_id }}-{{ formData.card_id }}-{{ formData.beneficiary_id }}</pre>
+            <pre>customersPluck: {{ customersPluck }}</pre>
+            <pre>cardsPluck: {{ cardsPluck }}</pre>
+            <pre>beneficiariesPluck: {{ beneficiariesPluck }}</pre>
+            
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-../composables/use.create

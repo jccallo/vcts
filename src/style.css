@@ -1,0 +1,17 @@
+.style-chooser .vs__search::placeholder,
+.style-chooser .vs__dropdown-toggle,
+.style-chooser .vs__dropdown-menu {
+  padding: 6.819px;
+  font-size: 14px;
+  border-color: #c5ccd6;
+  border-radius: 0.35rem;
+  color: #69707a;
+}
+
+.style-chooser .vs__clear,
+.style-chooser .vs__open-indicator {
+  fill: #69707a;
+}
+.style-chooser .vs__selected {
+  color: #69707a;
+}
