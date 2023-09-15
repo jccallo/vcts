@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
-import toast from './toast.service'
+import { $toast, $storage } from '@/services'
 
 class HttpService {
   private axiosInstance: AxiosInstance
@@ -15,6 +15,8 @@ class HttpService {
   private setupInterceptors() {
     this.axiosInstance.interceptors.request.use(
       (config: any) => {
+        const token = $storage.get($storage.TOKEN)
+        if (token) config.headers['Authorization'] = `Bearer ${token}`
         return config
       },
       (error: any) => {
@@ -29,13 +31,13 @@ class HttpService {
       (error: any) => {
         // error de axios
         if (!error.response)
-          toast.error('Error desconocido, inténtelo mas tarde!')
+          $toast.error('Error desconocido, inténtelo mas tarde!')
         // error general de la api
         else if (typeof error.response.data.error === 'string')
-          toast.error(error.response.data.error)
+          $toast.error(error.response.data.error)
+        // error de validacion
         else {
-          console.log('objeto', error.response.data.error[0])
-          toast.error('Error de validacion')
+          console.log('Error de validacion')
         }
 
         return Promise.reject(error)

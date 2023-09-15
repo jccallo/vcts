@@ -15,3 +15,20 @@
 .style-chooser .vs__selected {
   color: #69707a;
 }
+
+.fixed-btn-transparent-dark {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+.fixed-btn-transparent-dark:hover {
+  background-color: rgba(33, 40, 50, 0.1) !important;
+  border-color: transparent !important;
+}
+.fixed-btn-transparent-dark:focus {
+  background-color: rgba(33, 40, 50, 0.1)!important;
+  border-color: transparent !important;
+}
+.fixed-btn-transparent-dark:active {
+  background-color: rgba(33, 40, 50, 0.2) !important;
+  border-color: transparent !important;
+}

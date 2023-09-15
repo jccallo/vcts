@@ -1,3 +1,4 @@
-export { default as $http } from './http.service';
-export { default as $storage } from './storage.service';
-export { default as $toast } from './toast.service';
+export { default as $helper } from './helperService'
+export { default as $http } from './httpService'
+export { default as $storage } from './storageService'
+export { default as $toast } from './toastService'

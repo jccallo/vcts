@@ -1,32 +1,43 @@
 <script setup lang="ts">
-import { reactive, onMounted, watch } from 'vue';
-import { useCreate, useSales } from '../composables'
+import { reactive, onMounted, watch } from 'vue'
+import { useCreate, usePluck } from '../composables'
 import { Sale } from '../interfaces'
+import { ValidationAlert } from '@/components'
 
-const { create, getProfiles, profiles } = useCreate()
-const { customersPluck, cardsPluck, beneficiariesPluck, getCustomersPluck, getCardsPluck, getBeneficiariesPluck } = useSales()
+const { create, getProfiles, validationError } = useCreate()
+const {
+  customersPluck,
+  cardsPluck,
+  beneficiariesPluck,
+  getCustomersPluck,
+  getCardsPluck,
+  getBeneficiariesPluck,
+} = usePluck()
 
 const formData = reactive<Sale>({
-  branch_id: null,
-  profile_id: null,
-  customer_id: null,
-  payment_method: null,
-  card_id: null,
-  interest_free: null,
-  installments: null,
-  courtesy: null,
-  beneficiary_id: null,
-  retailer: null,
-  certificates: null,
-  amount: null,
-  authorization: null,
-  observation: ''
+  branch_id: 0,
+  profile_id: 0,
+  customer_id: 0,
+  card_id: 0,
+  beneficiary_id: 0,
+  payment_method: '',
+  interest_free: '',
+  installments: '',
+  courtesy: '',
+  retailer: '',
+  certificates: [],
+  amount: '',
+  authorization: '',
+  observation: '',
 })
 
-watch(() => formData.customer_id, async () => {
-  formData.card_id = null
-  if (!!formData.customer_id) await getCardsPluck(formData.customer_id)
-})
+watch(
+  () => formData.customer_id,
+  async () => {
+    formData.card_id = 0
+    if (formData.customer_id) await getCardsPluck(formData.customer_id)
+  }
+)
 
 const saleCreate = async () => {
   await create(formData)
@@ -36,7 +47,7 @@ onMounted(async () => {
   await getProfiles()
   await getBeneficiariesPluck()
   await getCustomersPluck()
-  if (!!formData.customer_id) await getCardsPluck(formData.customer_id)
+  if (formData.customer_id) await getCardsPluck(formData.customer_id)
 })
 </script>
 
@@ -76,14 +87,20 @@ onMounted(async () => {
   <div class="container-xl px-4 mt-4">
     <div class="row">
       <div class="col-xl-12">
+        <!-- alert -->
+        <ValidationAlert
+          v-if="validationError"
+          :menssage="validationError"
+          type="danger"
+        />
         <!-- general -->
         <div class="card mb-4">
           <div class="card-header">General</div>
           <div class="card-body">
             <form>
               <!-- Form Row-->
-              <div class="row gx-3">
-                <!-- Form Group -->
+              <!-- <div class="row gx-3">
+                
                 <div class="col-md-5 mb-3">
                   <label class="small mb-1" for="salebranch"
                     >Sede o Sucursal</label
@@ -97,7 +114,7 @@ onMounted(async () => {
                   </select>
                 </div>
 
-                <!-- Form Group -->
+                
                 <div class="col-md-7 mb-3">
                   <label class="small mb-1"
                     >Asesor o Agente</label
@@ -111,7 +128,7 @@ onMounted(async () => {
                     label="fullname"
                   />
                 </div>
-              </div>
+              </div> -->
 
               <!-- Form Row-->
               <div class="row gx-3">
@@ -146,14 +163,18 @@ onMounted(async () => {
               <div class="row gx-3">
                 <!-- Form Group -->
                 <div class="col-md-4 mb-3">
-                  <label class="small mb-1"
-                    >Medio de Pago</label
-                  >
+                  <label class="small mb-1">Medio de Pago</label>
                   <v-select
                     class="style-chooser"
                     placeholder="Seleccionar:"
                     v-model="formData.payment_method"
-                    :options="['Open Pay', 'Mercado Pago', 'Pago Efectivo', 'POS', 'Otros']"
+                    :options="[
+                      'Open Pay',
+                      'Mercado Pago',
+                      'Pago Efectivo',
+                      'POS',
+                      'Otros',
+                    ]"
                   />
                 </div>
 
@@ -176,7 +197,12 @@ onMounted(async () => {
                 <!-- Form Group -->
                 <div class="col-md-4 mb-3">
                   <label class="small mb-1" for="saleamount">Monto</label>
-                  <input class="form-control" id="saleamount" type="number" v-model="formData.amount" />
+                  <input
+                    class="form-control"
+                    id="saleamount"
+                    type="number"
+                    v-model="formData.amount"
+                  />
                 </div>
 
                 <!-- Form Group -->
@@ -184,7 +210,11 @@ onMounted(async () => {
                   <label class="small mb-1" for="saleinterestfree"
                     >Cuotas sin Intereses</label
                   >
-                  <select class="form-select" id="saleinterestfree" v-model="formData.interest_free">
+                  <select
+                    class="form-select"
+                    id="saleinterestfree"
+                    v-model="formData.interest_free"
+                  >
                     <option selected disabled>Seleccionar:</option>
                     <option value="Si">Si</option>
                     <option value="No">No</option>
@@ -193,14 +223,14 @@ onMounted(async () => {
 
                 <!-- Form Group -->
                 <div class="col-md-4 mb-3">
-                  <label class="small mb-1"
-                    >Número de Cuotas</label
-                  >
+                  <label class="small mb-1">Número de Cuotas</label>
                   <v-select
                     class="style-chooser"
                     placeholder="Seleccionar:"
                     v-model="formData.installments"
-                    :options="Array.from({ length: 36 }, (_, index) => index + 1)"
+                    :options="
+                      Array.from({ length: 36 }, (_, index) => index + 1)
+                    "
                   />
                 </div>
               </div>
@@ -210,7 +240,11 @@ onMounted(async () => {
                 <!-- Form Group -->
                 <div class="col-md-4 mb-3">
                   <label class="small mb-1" for="salecourtesy">Cortesía</label>
-                  <select class="form-select" id="salecourtesy" v-model="formData.courtesy">
+                  <select
+                    class="form-select"
+                    id="salecourtesy"
+                    v-model="formData.courtesy"
+                  >
                     <option selected disabled>Seleccionar:</option>
                     <option value="Si">Si</option>
                     <option value="No">No</option>
@@ -219,9 +253,7 @@ onMounted(async () => {
 
                 <!-- Form Group -->
                 <div class="col-md-8 mb-3">
-                  <label class="small mb-1"
-                    >Beneficiario</label
-                  >
+                  <label class="small mb-1">Beneficiario</label>
                   <v-select
                     class="style-chooser"
                     placeholder="Seleccionar:"
@@ -237,9 +269,7 @@ onMounted(async () => {
               <div class="row gx-3">
                 <!-- Form Group -->
                 <div class="col-md-4 mb-3">
-                  <label class="small mb-1"
-                    >Comercializadora</label
-                  >
+                  <label class="small mb-1">Comercializadora</label>
                   <v-select
                     class="style-chooser"
                     placeholder="Seleccionar:"
@@ -250,21 +280,19 @@ onMounted(async () => {
 
                 <!-- Form Group -->
                 <div class="col-md-8 mb-3">
-                  <label class="small mb-1"
-                    >Certificados</label
-                  >
+                  <label class="small mb-1">Certificados</label>
                   <v-select
                     multiple
                     class="style-chooser"
                     placeholder="Seleccionar:"
                     v-model="formData.certificates"
                     :options="[
-                        '4 Certificados Nacionales',
-                        '3 Certificados Nacionales',
-                        '2 Certificados Nacionales',
-                        '1 Certificados Nacionales',
-                        '2 Certificados Internacionales',
-                        '1 Certificados Internacionales',
+                      '4 Certificados Nacionales',
+                      '3 Certificados Nacionales',
+                      '2 Certificados Nacionales',
+                      '1 Certificados Nacionales',
+                      '2 Certificados Internacionales',
+                      '1 Certificados Internacionales',
                     ]"
                   />
                 </div>
@@ -274,9 +302,7 @@ onMounted(async () => {
               <div class="row gx-3">
                 <!-- Form Group -->
                 <div class="col-md-12 mb-3">
-                  <label class="small mb-1"
-                    >Observaciones</label
-                  >
+                  <label class="small mb-1">Observaciones</label>
                   <textarea
                     id="saleobservation"
                     class="lh-base form-control"
@@ -290,18 +316,27 @@ onMounted(async () => {
               </div>
 
               <!-- Submit button-->
-              <button class="btn btn-primary" type="button" @click.stop="saleCreate">
+              <button
+                class="btn btn-primary"
+                type="button"
+                @click.stop="saleCreate"
+              >
                 Agregar venta
               </button>
             </form>
 
-            
-            {{ formData.profile_id }} {{ typeof formData.profile_id }} {{ formData.profile_id == 0? 'si': 'no' }}
-            <pre>{{ formData }} {{ formData.customer_id }}-{{ formData.card_id }}-{{ formData.beneficiary_id }}</pre>
+            <pre>{{ formData }}</pre>
+            <!-- {{ formData.profile_id }} {{ typeof formData.profile_id }}
+            {{ formData.profile_id == 0 ? 'si' : 'no' }}
+            <pre
+              >{{ formData }} {{ formData.customer_id }}-{{
+                formData.card_id
+              }}-{{ formData.beneficiary_id }}</pre
+            >
             <pre>customersPluck: {{ customersPluck }}</pre>
             <pre>cardsPluck: {{ cardsPluck }}</pre>
             <pre>beneficiariesPluck: {{ beneficiariesPluck }}</pre>
-            
+            <pre>{{ profiles }}</pre> -->
           </div>
         </div>
       </div>

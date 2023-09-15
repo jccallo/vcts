@@ -6,7 +6,7 @@ const { customers, customersIndex } = useCustomers()
 const { cards, cardsIndex } = useCustomersCards()
 const { beneficiaries, beneficiariesIndex } = useBeneficiaries()
 
-const useSales = () => {
+export const usePluck = () => {
   const customersPluck = ref<any[]>([])
   const cardsPluck = ref<any[]>([])
   const beneficiariesPluck = ref<any[]>([])
@@ -25,7 +25,6 @@ const useSales = () => {
       id: card.id,
       fullname: `${card.number} / Proces: ${card.processor} / Banco: ${card.bank_id}`,
     }))
-    console.log('cards.value', cardsPluck.value)
   }
 
   const getBeneficiariesPluck = async (): Promise<void> => {
@@ -45,5 +44,3 @@ const useSales = () => {
     getBeneficiariesPluck,
   }
 }
-
-export default useSales

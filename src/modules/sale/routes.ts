@@ -1,7 +1,8 @@
 import { Index, Create } from './pages'
 import Module from './Module.vue'
+import { RouteRecordRaw } from 'vue-router'
 
-const routes = [
+const routes: RouteRecordRaw[] = [
   {
     path: 'sales',
     component: Module,

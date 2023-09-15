@@ -1,0 +1,156 @@
+<script setup lang="ts">
+import { reactive, ref } from 'vue'
+import { Login, Model } from '../interfaces'
+import { useSession } from '../composables'
+
+const { sessionStore, loginError } = useSession()
+
+const isSubmitting = ref<boolean>(false)
+const models = ref<Model[]>([
+  { name: 'Profile', label: 'Colaborador' },
+  { name: 'User', label: 'Administrador' },
+])
+
+const login = reactive<Login>({
+  model: 'Profile',
+  email: '',
+  password: '',
+  remember_token: false,
+})
+
+const onSubmit = async () => {
+  isSubmitting.value = true
+  await sessionStore(login)
+  isSubmitting.value = false
+}
+</script>
+
+<template>
+  <div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+      <main>
+        <div class="container-xl px-4">
+          <div class="row justify-content-center">
+            <div class="col-lg-5">
+              <!-- Basic login form-->
+              <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card-header justify-content-center">
+                  <h3 class="fw-light my-4">Acceso</h3>
+                </div>
+                <div class="card-body">
+                  <!-- Login form-->
+                  <form autocomplete="off" @submit.prevent="onSubmit">
+                    <!-- Form Group (email address)-->
+                    <div class="mb-3">
+                      <label class="small mb-1" for="inputEmailAddress"
+                        >Modo</label
+                      >
+                      <v-select
+                        class="style-chooser"
+                        placeholder="Seleccionar:"
+                        v-model="login.model"
+                        :options="models"
+                        :reduce="(model: Model) => model.name"
+                        label="label"
+                      />
+                    </div>
+                    <!-- Form Group (email address)-->
+                    <div class="mb-3">
+                      <label class="small mb-1" for="inputEmailAddress"
+                        >Correo</label
+                      >
+                      <input
+                        class="form-control"
+                        id="inputEmailAddress"
+                        type="email"
+                        placeholder="Ingrese su correo"
+                        :class="{ 'is-invalid': loginError.email[0] }"
+                        v-model="login.email"
+                      />
+                      <div v-if="loginError.email[0]" class="invalid-feedback">
+                        {{ loginError.email[0] }}
+                      </div>
+                    </div>
+                    <!-- Form Group (password)-->
+                    <div class="mb-3">
+                      <label class="small mb-1" for="inputPassword"
+                        >Contraseña</label
+                      >
+                      <input
+                        class="form-control"
+                        id="inputPassword"
+                        type="password"
+                        placeholder="Enter password"
+                        :class="{ 'is-invalid': loginError.password[0] }"
+                        v-model="login.password"
+                      />
+                      <div
+                        v-if="loginError.password[0]"
+                        class="invalid-feedback"
+                      >
+                        {{ loginError.password[0] }}
+                      </div>
+                    </div>
+                    <!-- Form Group (remember password checkbox)-->
+                    <div class="mb-3">
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          id="rememberPasswordCheck"
+                          type="checkbox"
+                          v-model="login.remember_token"
+                        />
+                        <label
+                          class="form-check-label"
+                          for="rememberPasswordCheck"
+                          >Recordar contraseña</label
+                        >
+                      </div>
+                    </div>
+                    <!-- Form Group (login box)-->
+                    <div
+                      class="d-flex align-items-center justify-content-between mt-4 mb-0"
+                    >
+                      <a class="small" href="#"
+                        >¿Has olvidado tu contraseña?</a
+                      >
+                      <button
+                        type="submit"
+                        class="btn btn-primary"
+                        :disabled="isSubmitting"
+                      >
+                        Ingresar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+                <div class="card-footer text-center">
+                  <div class="small">
+                    <a href="#"
+                      >¿Necesitas una cuenta? ¡Registrate!</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    {{ login }}
+    <div id="layoutAuthentication_footer">
+      <footer class="footer-admin mt-auto footer-dark">
+        <div class="container-xl px-4">
+          <div class="row">
+            <div class="col-md-6 small">Copyright &copy; VCZoluciones 2023</div>
+            <div class="col-md-6 text-md-end small">
+              <a href="#!">Politica de Privacidad</a>
+              &middot;
+              <a href="#!">Terminos &amp; Condiciones</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</template>
