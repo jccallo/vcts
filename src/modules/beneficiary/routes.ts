@@ -4,18 +4,18 @@ import { Create, Index } from './pages'
 
 const routes: RouteRecordRaw[] = [
   {
-    path: 'profiles',
+    path: 'beneficiaries',
     component: Module,
     children: [
       {
         path: '',
-        name: 'profiles.index',
+        name: 'beneficiaries.index',
         component: Index,
       },
       
       {
         path: 'create',
-        name: 'profiles.create',
+        name: 'beneficiaries.create',
         component: Create,
       },
     ],

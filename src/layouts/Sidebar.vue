@@ -47,17 +47,17 @@ onMounted(() => {
         <!-- Modulos-->
         <div class="sidenav-menu-heading">Mantenimiento</div>
 
-        <!-- Usuarios-->
-        <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseUsers"
-          aria-expanded="false" aria-controls="collapseUsers">
+        <!-- Empleados-->
+        <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
+          data-bs-target="#collapseEmployees" aria-expanded="false" aria-controls="collapseEmployees">
           <div class="nav-link-icon"><vue-feather type="users" size="16"></vue-feather></div>
-          Usuarios
+          Empleados
           <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
         </a>
-        <div class="collapse" id="collapseUsers" data-bs-parent="#accordionSidenav">
+        <div class="collapse" id="collapseEmployees" data-bs-parent="#accordionSidenav">
           <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
-            <router-link :to="{ name: 'dashboard.index' }" class="nav-link">Lista de Usuarios</router-link>
-            <router-link :to="{ name: 'dashboard.index' }" class="nav-link">Agregar Usuario</router-link>
+            <router-link :to="{ name: 'profiles.index' }" class="nav-link">Lista de Ventas</router-link>
+            <router-link :to="{ name: 'profiles.create' }" class="nav-link">Agregar Empleado</router-link>
           </nav>
         </div>
 
@@ -70,8 +70,64 @@ onMounted(() => {
         </a>
         <div class="collapse" id="collapseCustomers" data-bs-parent="#accordionSidenav">
           <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
-            <router-link :to="{ name: 'dashboard.index' }" class="nav-link">Lista de Clientes</router-link>
-            <router-link :to="{ name: 'dashboard.index' }" class="nav-link">Agregar Cliente</router-link>
+            <router-link :to="{ name: 'customers.index' }" class="nav-link">Lista de Clientes</router-link>
+            <a class="nav-link" href="invoice.html">Agregar Cliente</a>
+          </nav>
+        </div>
+
+        <!-- Beneficiarios -->
+        <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseBeneficiaries"
+          aria-expanded="false" aria-controls="collapseBeneficiaries">
+          <div class="nav-link-icon"><vue-feather type="users" size="16"></vue-feather></div>
+          Beneficiarios
+          <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+        </a>
+        <div class="collapse" id="collapseBeneficiaries" data-bs-parent="#accordionSidenav">
+          <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
+            <router-link :to="{ name: 'dashboard.index' }" class="nav-link">Lista de Beneficiarios</router-link>
+            <router-link :to="{ name: 'dashboard.index' }" class="nav-link">Agregar Beneficiario</router-link>
+          </nav>
+        </div>
+
+        <!-- Bancos -->
+        <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseBanks"
+          aria-expanded="false" aria-controls="collapseBanks">
+          <div class="nav-link-icon"><vue-feather type="dollar-sign" size="16"></vue-feather></div>
+          Bancos
+          <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+        </a>
+        <div class="collapse" id="collapseBanks" data-bs-parent="#accordionSidenav">
+          <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
+            <router-link :to="{ name: 'dashboard.index' }" class="nav-link">Lista de Bancos</router-link>
+            <router-link :to="{ name: 'dashboard.index' }" class="nav-link">Agregar Banco</router-link>
+          </nav>
+        </div>
+
+        <!-- Sedes-->
+        <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseBranches"
+          aria-expanded="false" aria-controls="collapseBranches">
+          <div class="nav-link-icon"><vue-feather type="flag" size="16"></vue-feather></div>
+          Sedes
+          <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+        </a>
+        <div class="collapse" id="collapseBranches" data-bs-parent="#accordionSidenav">
+          <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
+            <router-link :to="{ name: 'dashboard.index' }" class="nav-link">Lista de Usuarios</router-link>
+            <router-link :to="{ name: 'dashboard.index' }" class="nav-link">Agregar Usuario</router-link>
+          </nav>
+        </div>
+
+        <!-- Empresas -->
+        <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseCompanies"
+          aria-expanded="false" aria-controls="collapseCompanies">
+          <div class="nav-link-icon"><vue-feather type="globe" size="16"></vue-feather></div>
+          Empresas
+          <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+        </a>
+        <div class="collapse" id="collapseCompanies" data-bs-parent="#accordionSidenav">
+          <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
+            <router-link :to="{ name: 'dashboard.index' }" class="nav-link">Lista de Empresas</router-link>
+            <router-link :to="{ name: 'dashboard.index' }" class="nav-link">Agregar Empresa</router-link>
           </nav>
         </div>
 
@@ -89,34 +145,6 @@ onMounted(() => {
           </nav>
         </div>
 
-        <!-- Empleados-->
-        <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-          data-bs-target="#collapseEmployees" aria-expanded="false" aria-controls="collapseEmployees">
-          <div class="nav-link-icon"><vue-feather type="users" size="16"></vue-feather></div>
-          Empleados
-          <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-        </a>
-        <div class="collapse" id="collapseEmployees" data-bs-parent="#accordionSidenav">
-          <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
-            <router-link :to="{ name: 'profiles.index' }" class="nav-link">Lista de Ventas</router-link>
-            <a class="nav-link" href="invoice.html">Agregar Empleado</a>
-          </nav>
-        </div>
-
-        <!-- Sedes -->
-        <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-          data-bs-target="#collapseBranches" aria-expanded="false" aria-controls="collapseBranches">
-          <div class="nav-link-icon"><vue-feather type="flag" size="16"></vue-feather></div>
-          Sedes
-          <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-        </a>
-        <div class="collapse" id="collapseBranches" data-bs-parent="#accordionSidenav">
-          <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
-            <a class="nav-link" href="pricing.html">Lista de Sedes</a>
-            <a class="nav-link" href="invoice.html">Agregar Sede</a>
-          </nav>
-        </div>
-
         <!-- Permisos -->
         <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
           data-bs-target="#collapsePermissions" aria-expanded="false" aria-controls="collapsePermissions">
@@ -128,6 +156,20 @@ onMounted(() => {
           <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
             <a class="nav-link" href="pricing.html">Lista de Permisos</a>
             <a class="nav-link" href="invoice.html">Agregar Permiso</a>
+          </nav>
+        </div>
+
+        <!-- Tipos de documentos -->
+        <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseDocuments"
+          aria-expanded="false" aria-controls="collapseDocuments">
+          <div class="nav-link-icon"><vue-feather type="paperclip" size="16"></vue-feather></div>
+          Documentos
+          <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+        </a>
+        <div class="collapse" id="collapseDocuments" data-bs-parent="#accordionSidenav">
+          <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
+            <router-link :to="{ name: 'dashboard.index' }" class="nav-link">Lista de documentos</router-link>
+            <router-link :to="{ name: 'dashboard.index' }" class="nav-link">Agregar documento</router-link>
           </nav>
         </div>
 

@@ -1,10 +1,10 @@
 import { ref } from 'vue'
-import { useCustomers, useCustomersCards } from "@/modules/customers/composables"
-import {  useBeneficiaries } from '@/modules/beneficiaries/composables'
+import { useCustomers, useCustomersCards } from "@/modules/customer/composables"
+import {  useBeneficiary } from '@/modules/beneficiary/composables'
 
 const { customers, customersIndex } = useCustomers()
 const { cards, cardsIndex } = useCustomersCards()
-const { beneficiaries, beneficiariesIndex } = useBeneficiaries()
+const { beneficiaries, beneficiariesIndex } = useBeneficiary()
 
 export const usePluck = () => {
   const customersPluck = ref<any[]>([])

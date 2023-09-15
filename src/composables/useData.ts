@@ -2,11 +2,11 @@ import { Ref, ref, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import { $helper, $http } from '@/services'
 
-export const useProfile = () => {
+export const useData = (resource: string) => {
   const route = useRoute()
   const router = useRouter()
 
-  const profiles: Ref<any[]> = ref([])
+  const data: Ref<any[]> = ref([])
   const links: Ref<any[]> = ref([])
   const from: Ref<number> = ref(0)
   const to: Ref<number> = ref(0)
@@ -16,9 +16,9 @@ export const useProfile = () => {
   const perpage: Ref<string> = ref('10')
   const query: Ref<string> = ref('')
 
-  const getAllProfiles = async () => {
-    const response = await $http.get<any>(`/profiles?page=${page.value}&perpage=${perpage.value}&query=${query.value}`)
-    profiles.value = response.data
+  const getAllData = async () => {
+    const response = await $http.get<any>(`/${resource}?page=${page.value}&perpage=${perpage.value}&query=${query.value}`)
+    data.value = response.data
     links.value = response.meta.links.map((link: any) => {
       if (link.label === '&laquo; Previous') link.label = '‹'
       else if (link.label === 'Next &raquo;') link.label = '›'
@@ -33,11 +33,11 @@ export const useProfile = () => {
     page.value = $helper.getQueryParamValue('page') || '1'
     perpage.value = $helper.getQueryParamValue('perpage') || '10'
     query.value = $helper.getQueryParamValue('query') || ''
-    await getAllProfiles()
+    await getAllData()
   }
 
   const goTo = (url: string) => {
-    router.push({ name: 'profiles.index', query: { 
+    router.push({ name: `${resource}.index`, query: { 
       page: $helper.getQueryParamValue('page', url) || '1', 
       perpage: perpage.value,
       query: query.value, 
@@ -45,15 +45,17 @@ export const useProfile = () => {
   }
 
   watch(() => perpage.value, async () => {
-    router.push({ name: 'profiles.index', query: { page: '1', perpage: perpage.value, query: query.value } })
+    router.push({ name: `${resource}.index`, query: { page: '1', perpage: perpage.value, query: query.value } })
   })
 
   watch(() => query.value, async () => {
-    router.push({ name: 'profiles.index', query: { page: '1', perpage: '10', query: query.value } })
+    router.push({ name: `${resource}.index`, query: { page: '1', perpage: '10', query: query.value } })
   })
 
   watch(() => route.fullPath, async () => {
-    if (route.name == 'profiles.index') await loadURL()
+    console.log('route', route)
+    console.log('route.fullPath', route.fullPath)
+    if (route.name == `${resource}.index`) await loadURL()
   })
 
   onMounted(async () => {
@@ -61,7 +63,7 @@ export const useProfile = () => {
   })
 
   return {
-    profiles,
+    data,
     links,
     from,
     to,

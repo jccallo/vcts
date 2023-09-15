@@ -2,10 +2,11 @@ import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
 import Module from '@/Module.vue'
 import AuthRoutes from '@/modules/auth/routes'
 import SaleRoutes from '@/modules/sale/routes';
-import CustomersRoutes from '@/modules/customers/routes'
-import DashboardRoutes from '@/modules/dashboard/routes'
 import ProfileRutes from '@/modules/profiles/routes'
-import { $storage } from '@/services';
+import CustomerRoutes from '@/modules/customer/routes'
+import DashboardRoutes from '@/modules/dashboard/routes'
+import BeneficiaryRoutes from '@/modules/beneficiary/routes'
+import { $storage } from '@/services'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -15,8 +16,9 @@ const routes: RouteRecordRaw[] = [
     children: [
       ...DashboardRoutes,
       ...SaleRoutes,
-      ...CustomersRoutes,
       ...ProfileRutes,
+      ...CustomerRoutes,
+      ...BeneficiaryRoutes,
     ]
   },
   ...AuthRoutes,

@@ -69,11 +69,11 @@ onMounted(() => {
           </h6>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="#!">
-            <div class="dropdown-item-icon"><i data-feather="settings"></i></div>
+            <div class="dropdown-item-icon"><vue-feather type="settings" size="16"></vue-feather></div>
             Cuenta
           </a>
           <span class="dropdown-item" style="cursor: pointer;" @click.stop="logout">
-            <div class="dropdown-item-icon"><i data-feather="log-out"></i></div>
+            <div class="dropdown-item-icon"><vue-feather type="log-out" size="16"></vue-feather></div>
             Salir
           </span>
         </div>

@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { useProfile } from '../composables/useProfile'
+import { useData } from '@/composables/useData'
 
-const { profiles, links, from, to, total, perpage, query, goTo } = useProfile()
+const { data, links, from, to, total, perpage, query, goTo }= useData('customers')
+
+
 </script>
 
 <template>
@@ -14,7 +16,7 @@ const { profiles, links, from, to, total, perpage, query, goTo } = useProfile()
           <div class="col-auto mb-3">
             <h1 class="page-header-title">
               <div class="page-header-icon"><vue-feather type="users" size="16"></vue-feather></div>
-              Lista de Empleados
+              Lista de Clientes
             </h1>
           </div>
           <div class="col-12 col-xl-auto mb-3">
@@ -30,7 +32,7 @@ const { profiles, links, from, to, total, perpage, query, goTo } = useProfile()
               href="user-management-add-user.html"
             >
               <i class="me-1" data-feather="user-plus"></i>
-              Agregar Nuevo Empleado
+              Agregar Nuevo Cliente
             </a>
           </div>
         </div>
@@ -95,7 +97,7 @@ const { profiles, links, from, to, total, perpage, query, goTo } = useProfile()
                 </tr>
               </thead>
               <tbody>
-                <tr v-if="profiles.length > 0" v-for="profile in profiles" key="profile.id">
+                <tr v-if="data.length > 0" v-for="item in data" key="item.id">
                   <td>
                     <div class="d-flex align-items-center">
                       <div class="avatar me-2">
@@ -104,32 +106,32 @@ const { profiles, links, from, to, total, perpage, query, goTo } = useProfile()
                           src="../../../assets/img/illustrations/profiles/profile-1.png"
                         />
                       </div>
-                      {{ profile.name }}
+                      {{ `${item.firstname} ${item.lastname}` }}
                     </div>
                   </td>
-                  <td>{{ profile.email }}</td>
-                  <td>{{ profile.phone }}</td>
+                  <td>{{ item.email }}</td>
+                  <td>{{ item.phone }}</td>
                   <td>
-                    {{ profile.document_number }}
+                    {{ item.document_number }}
                   </td>
                   <td>
                     <span
                       class="badge"
-                      :class="profile.status === '1' ? 'bg-green-soft text-green': 'bg-yellow-soft text-yellow'"
+                      :class="item.status === '1' ? 'bg-green-soft text-green': 'bg-yellow-soft text-yellow'"
                       >{{
-                        profile.status === '1' ? 'Activo' : 'Inactivo'
+                        item.status === '1' ? 'Activo' : 'Inactivo'
                       }}</span
                     >
                   </td>
                   <td>
                     <routerLink
                       class="btn btn-datatable btn-icon btn-transparent-dark me-2 fixed-btn-transparent-dark"
-                      :to="{ name: 'profiles.index' }"
+                      :to="{ name: 'customers.index' }"
                       ><vue-feather type="edit" size="16" ></vue-feather>
                     </routerLink>
                     <routerLink
                       class="btn btn-datatable btn-icon btn-transparent-dark fixed-btn-transparent-dark"
-                      :to="{ name: 'profiles.index' }"
+                      :to="{ name: 'customers.index' }"
                       ><vue-feather type="trash-2" size="16"></vue-feather>
                     </routerLink>
                   </td>
@@ -140,7 +142,7 @@ const { profiles, links, from, to, total, perpage, query, goTo } = useProfile()
           </div>
           <!-- footer -->
           <div class="datatable-bottom">
-            <div v-if="profiles.length > 0" class="datatable-info">Mostrando {{ from }} a {{ to }} de {{ total }} entradas</div>
+            <div v-if="data.length > 0" class="datatable-info">Mostrando {{ from }} a {{ to }} de {{ total }} entradas</div>
             <nav class="datatable-pagination">
               <ul class="datatable-pagination-list">
                 <li

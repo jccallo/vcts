@@ -1,7 +1,7 @@
 import { $http } from "@/services"
 import { ref } from 'vue';
 
-const useBeneficiaries = () => {
+export const useBeneficiary = () => {
   const beneficiaries = ref<any[]>([])
   const meta = ref<any>({})
 
@@ -16,5 +16,3 @@ const useBeneficiaries = () => {
     beneficiariesIndex,
   }
 }
-
-export default useBeneficiaries
