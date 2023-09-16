@@ -2,6 +2,7 @@ import { Ref, ref, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import { $helper, $http } from '@/services'
 
+// useProfile
 export const useProfile = () => {
   const route = useRoute()
   const router = useRouter()
@@ -72,3 +73,5 @@ export const useProfile = () => {
     goTo,
   }
 }
+
+// useUll

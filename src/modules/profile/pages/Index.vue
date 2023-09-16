@@ -20,16 +20,9 @@ const { profiles, links, from, to, total, perpage, query, goTo } = useProfile()
           <div class="col-12 col-xl-auto mb-3">
             <a
               class="btn btn-sm btn-light text-primary"
-              href="user-management-groups-list.html"
-            >
-              <i class="me-1" data-feather="users"></i>
-              Manage Groups
-            </a>
-            <a
-              class="btn btn-sm btn-light text-primary"
               href="user-management-add-user.html"
             >
-              <i class="me-1" data-feather="user-plus"></i>
+              <vue-feather type="user-plus" size="16" class="me-1"></vue-feather>
               Agregar Nuevo Empleado
             </a>
           </div>
