@@ -1,6 +1,6 @@
 /* vue3-progress */
 .vue3-progress-bar-container .vue3-progress-bar {
-  height: 4px; /* altura */
+  height: 3px; /* altura */
   background-color: #0061f2; /* color de fondo */
 }
 

@@ -2,7 +2,7 @@ import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
 import Module from '@/Module.vue'
 import AuthRoutes from '@/modules/auth/routes'
 import SaleRoutes from '@/modules/sale/routes';
-import ProfileRutes from '@/modules/profiles/routes'
+import ProfileRutes from '@/modules/profile/routes'
 import CustomerRoutes from '@/modules/customer/routes'
 import DashboardRoutes from '@/modules/dashboard/routes'
 import BeneficiaryRoutes from '@/modules/beneficiary/routes'
@@ -46,12 +46,11 @@ router.beforeEach((to, from, next) => {
     if (remember_token && token) next({ name: 'dashboard.index' })
     else {
       $storage.remove($storage.TOKEN)
-      $storage.remove($storage.USER)
       $storage.remove($storage.REMEMBER_TOKEN)
       next()
     }
   }
-  console.log('from', from)
+  console.log('from:', from.fullPath)
 })
 
 export default router

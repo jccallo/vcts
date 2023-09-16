@@ -1,16 +1,9 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import { useSession } from '@/modules/auth/composables'
+import { useLogout } from '@/modules/auth/composables'
+import { useSessionStore } from '@/modules/auth/stores';
 
-const { sessionDestroy, getSessionUser, sessionUser } = useSession()
-
-const logout = async () => {
-  await sessionDestroy()
-}
-
-onMounted(() => {
-  getSessionUser()
-})
+const session = useSessionStore()
+const { logout } = useLogout()
 </script>
 
 <template>
@@ -63,8 +56,8 @@ onMounted(() => {
           <h6 class="dropdown-header d-flex align-items-center">
             <img class="dropdown-user-img" src="../assets/img/illustrations/profiles/profile-1.png" />
             <div class="dropdown-user-details">
-              <div v-if="sessionUser" class="dropdown-user-details-name">{{ sessionUser.name }}</div>
-              <div v-if="sessionUser" class="dropdown-user-details-email">{{ sessionUser.email }}</div>
+              <div v-if="session.user" class="dropdown-user-details-name">{{ session.user.name }}</div>
+              <div v-if="session.user" class="dropdown-user-details-email">{{ session.user.email }}</div>
             </div>
           </h6>
           <div class="dropdown-divider"></div>
@@ -72,7 +65,7 @@ onMounted(() => {
             <div class="dropdown-item-icon"><vue-feather type="settings" size="16"></vue-feather></div>
             Cuenta
           </a>
-          <span class="dropdown-item" style="cursor: pointer;" @click.stop="logout">
+          <span class="dropdown-item" style="cursor: pointer;" @click.prevent="logout">
             <div class="dropdown-item-icon"><vue-feather type="log-out" size="16"></vue-feather></div>
             Salir
           </span>
