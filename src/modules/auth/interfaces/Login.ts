@@ -1,4 +1,4 @@
-export interface Login {
+export interface LoginForm {
   model: string
   email: string
   password: string

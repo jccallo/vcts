@@ -2,8 +2,6 @@ import { useCookies } from 'vue3-cookies'
 
 class StorageService {
   public TOKEN: string = import.meta.env.VITE_TOKEN
-  public USER: string = import.meta.env.VITE_SESSION
-  public MODEL: string = import.meta.env.VITE_MODEL
   public REMEMBER_TOKEN: string = import.meta.env.VITE_REMEMBER_TOKEN
   
   private cookies: any

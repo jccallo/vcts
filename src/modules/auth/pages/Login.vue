@@ -1,28 +1,8 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import { Login, Model } from '../interfaces'
-import { useSession } from '../composables'
+import { useLogin } from '../composables'
+import { Model } from '../interfaces';
 
-const { sessionStore, loginError } = useSession()
-
-const isSubmitting = ref<boolean>(false)
-const models = ref<Model[]>([
-  { name: 'Profile', label: 'Colaborador' },
-  { name: 'User', label: 'Administrador' },
-])
-
-const login = reactive<Login>({
-  model: 'Profile',
-  email: '',
-  password: '',
-  remember_token: false,
-})
-
-const onSubmit = async () => {
-  isSubmitting.value = true
-  await sessionStore(login)
-  isSubmitting.value = false
-}
+const { models, isSubmitting, loginForm, loginError, login } = useLogin()
 </script>
 
 <template>
@@ -39,16 +19,16 @@ const onSubmit = async () => {
                 </div>
                 <div class="card-body">
                   <!-- Login form-->
-                  <form autocomplete="off" @submit.prevent="onSubmit">
+                  <form autocomplete="off" @submit.prevent="login">
                     <!-- Form Group (email address)-->
                     <div class="mb-3">
-                      <label class="small mb-1" for="inputEmailAddress"
+                      <label class="small mb-1"
                         >Modo</label
                       >
                       <v-select
                         class="style-chooser"
                         placeholder="Seleccionar:"
-                        v-model="login.model"
+                        v-model="loginForm.model"
                         :options="models"
                         :reduce="(model: Model) => model.name"
                         label="label"
@@ -65,7 +45,7 @@ const onSubmit = async () => {
                         type="email"
                         placeholder="Ingrese su correo"
                         :class="{ 'is-invalid': loginError.email[0] }"
-                        v-model="login.email"
+                        v-model="loginForm.email"
                       />
                       <div v-if="loginError.email[0]" class="invalid-feedback">
                         {{ loginError.email[0] }}
@@ -82,7 +62,7 @@ const onSubmit = async () => {
                         type="password"
                         placeholder="Enter password"
                         :class="{ 'is-invalid': loginError.password[0] }"
-                        v-model="login.password"
+                        v-model="loginForm.password"
                       />
                       <div
                         v-if="loginError.password[0]"
@@ -98,7 +78,7 @@ const onSubmit = async () => {
                           class="form-check-input"
                           id="rememberPasswordCheck"
                           type="checkbox"
-                          v-model="login.remember_token"
+                          v-model="loginForm.remember_token"
                         />
                         <label
                           class="form-check-label"
@@ -111,9 +91,7 @@ const onSubmit = async () => {
                     <div
                       class="d-flex align-items-center justify-content-between mt-4 mb-0"
                     >
-                      <a class="small" href="#"
-                        >¿Has olvidado tu contraseña?</a
-                      >
+                      <a class="small" href="#">¿Has olvidado tu contraseña?</a>
                       <button
                         type="submit"
                         class="btn btn-primary"
@@ -126,9 +104,7 @@ const onSubmit = async () => {
                 </div>
                 <div class="card-footer text-center">
                   <div class="small">
-                    <a href="#"
-                      >¿Necesitas una cuenta? ¡Registrate!</a
-                    >
+                    <a href="#">¿Necesitas una cuenta? ¡Registrate!</a>
                   </div>
                 </div>
               </div>

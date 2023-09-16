@@ -1,14 +1,16 @@
+import { ProgressFinisher, useProgress } from '@marcoschulte/vue3-progress'
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { $toast, $storage } from '@/services'
 
 class HttpService {
   private axiosInstance: AxiosInstance
+  private progresses = [] as ProgressFinisher[]
 
   constructor() {
     this.axiosInstance = axios.create({
       baseURL: import.meta.env.VITE_BASE_URL,
     })
-
+    this.progresses = []
     this.setupInterceptors()
   }
 
@@ -17,18 +19,22 @@ class HttpService {
       (config: any) => {
         const token = $storage.get($storage.TOKEN)
         if (token) config.headers['Authorization'] = `Bearer ${token}`
+        this.progresses.push(useProgress().start())
         return config
       },
       (error: any) => {
+        this.progresses.pop()?.finish()
         return Promise.reject(error)
       }
     )
 
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse) => {
+        this.progresses.pop()?.finish()
         return response
       },
       (error: any) => {
+        this.progresses.pop()?.finish()
         // error de axios
         if (!error.response)
           $toast.error('Error desconocido, inténtelo mas tarde!')

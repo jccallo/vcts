@@ -1,7 +1,7 @@
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router'
 import { $http, $storage, $toast } from '@/services';
-import { Login, LoginError } from '../interfaces';
+import { LoginForm, LoginError } from '../interfaces';
 import { useSessionStore } from '../stores';
 
 export const useSession = () => {
@@ -15,7 +15,7 @@ export const useSession = () => {
     remember_token: [],
   })
 
-  const sessionStore = async (data: Login) => {
+  const sessionStore = async (data: LoginForm) => {
     try {
       const response = await $http.post<any>('/login', data)
       session.setSession(response.data.model, response.data.user)

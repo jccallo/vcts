@@ -1,3 +1,10 @@
+/* vue3-progress */
+.vue3-progress-bar-container .vue3-progress-bar {
+  height: 4px; /* altura */
+  background-color: #0061f2; /* color de fondo */
+}
+
+/* vue-select */
 .style-chooser .vs__search::placeholder,
 .style-chooser .vs__dropdown-toggle,
 .style-chooser .vs__dropdown-menu {
@@ -16,6 +23,7 @@
   color: #69707a;
 }
 
+/* correcion de estilos para iconos vue-feather */
 .fixed-btn-transparent-dark {
   background-color: transparent !important;
   border-color: transparent !important;
