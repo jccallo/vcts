@@ -3,7 +3,7 @@ import { useLogout } from '@/modules/auth/composables'
 import { useSessionStore } from '@/modules/auth/stores';
 
 const session = useSessionStore()
-const { logout } = useLogout()
+const { isLoading, logout } = useLogout()
 </script>
 
 <template>
@@ -65,10 +65,10 @@ const { logout } = useLogout()
             <div class="dropdown-item-icon"><vue-feather type="settings" size="16"></vue-feather></div>
             Cuenta
           </a>
-          <span class="dropdown-item" style="cursor: pointer;" @click.prevent="logout">
+          <button class="dropdown-item" style="cursor: pointer;" @click.prevent="logout" :disabled="isLoading">
             <div class="dropdown-item-icon"><vue-feather type="log-out" size="16"></vue-feather></div>
             Salir
-          </span>
+          </button>
         </div>
       </li>
     </ul>

@@ -2,7 +2,7 @@
 import { useLogout } from '@/modules/auth/composables'
 import { useSessionStore } from '@/modules/auth/stores';
 
-const session = useSessionStore()
+const sessionStore = useSessionStore()
 const { logout } = useLogout()
 </script>
 
@@ -201,7 +201,7 @@ const { logout } = useLogout()
     <div class="sidenav-footer">
       <div class="sidenav-footer-content">
         <div class="sidenav-footer-subtitle">Conectado como:</div>
-        <div v-if="session.user" class="sidenav-footer-title">{{ session.user.name }}</div>
+        <div v-if="sessionStore.user" class="sidenav-footer-title">{{ sessionStore.user.name }}</div>
       </div>
     </div>
   </nav>

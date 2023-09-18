@@ -1,52 +1,65 @@
+import { Ref, ref } from 'vue'
 import { ProgressFinisher, useProgress } from '@marcoschulte/vue3-progress'
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
-import { $toast, $storage } from '@/services'
+import { $storage } from '@/services'
 
 class HttpService {
   private axiosInstance: AxiosInstance
-  private progresses = [] as ProgressFinisher[]
+  private progresses: ProgressFinisher[]
+  public isLoading: Ref<boolean>
 
   constructor() {
     this.axiosInstance = axios.create({
       baseURL: import.meta.env.VITE_BASE_URL,
     })
-    this.progresses = []
     this.setupInterceptors()
+    this.progresses = []
+    this.isLoading = ref<boolean>(false)
+  }
+
+  private progressStart(): void {
+    this.isLoading.value = true
+    this.progresses.push(useProgress().start())
+  }
+
+  private progressFinish(): void {
+    this.isLoading.value = false
+    this.progresses.pop()?.finish()
+  }
+
+  private updateHeader(config: any) {
+    const token = $storage.get($storage.TOKEN)
+    if (token) config.headers['Authorization'] = `Bearer ${token}`
+    return config
   }
 
   private setupInterceptors() {
     this.axiosInstance.interceptors.request.use(
       (config: any) => {
-        const token = $storage.get($storage.TOKEN)
-        if (token) config.headers['Authorization'] = `Bearer ${token}`
-        this.progresses.push(useProgress().start())
-        return config
+        this.progressStart()
+        return this.updateHeader(config)
       },
       (error: any) => {
-        this.progresses.pop()?.finish()
+        this.progressFinish()
         return Promise.reject(error)
       }
     )
 
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse) => {
-        this.progresses.pop()?.finish()
+        this.progressFinish()
         return response
       },
       (error: any) => {
-        this.progresses.pop()?.finish()
-        // error de axios
-        if (!error.response)
-          $toast.error('Error desconocido, inténtelo mas tarde!')
-        // error general de la api
-        else if (typeof error.response.data.error === 'string')
-          $toast.error(error.response.data.error)
-        // error de validacion
-        else {
-          console.log('Error de validacion')
-        }
+        this.progressFinish()
 
-        return Promise.reject(error)
+        if (!error.response) {
+          return Promise.reject('Error inesperado, inténtelo mas tarde!') // error de axios
+        } else if (typeof error.response.data.error === 'string') {
+          return Promise.reject(error.response.data.error) // error general de la api
+        } else {
+          return Promise.reject(error.response.data.error) // error de validacion
+        }
       }
     )
   }

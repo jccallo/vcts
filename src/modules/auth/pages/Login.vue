@@ -2,7 +2,7 @@
 import { useLogin } from '../composables'
 import { Model } from '../interfaces';
 
-const { models, isSubmitting, loginForm, loginError, login } = useLogin()
+const { models, isLoading, loginForm, loginError, login } = useLogin()
 </script>
 
 <template>
@@ -95,7 +95,7 @@ const { models, isSubmitting, loginForm, loginError, login } = useLogin()
                       <button
                         type="submit"
                         class="btn btn-primary"
-                        :disabled="isSubmitting"
+                        :disabled="isLoading"
                       >
                         Ingresar
                       </button>

@@ -6,9 +6,7 @@ import { useSessionStore } from '../stores'
 
 export const useLogin = () => {
   const router = useRouter()
-  const session = useSessionStore()
-
-  const isSubmitting = ref<boolean>(false)
+  const sessionStore = useSessionStore()
 
   const models = ref<Model[]>([
     { name: 'Profile', label: 'Colaborador' },
@@ -29,28 +27,27 @@ export const useLogin = () => {
   })
 
   const login = async () => {
-    isSubmitting.value = true
     try {
       const { data } = await $http.post<any>('/login', loginForm)
-      session.setSession(data.model, data.user)
+      sessionStore.setSession(data.model, data.user)
+      $toast.success(data.message)
+
       $storage.set($storage.TOKEN, data.token)
       $storage.set($storage.REMEMBER_TOKEN, data.remember_token)
-      $toast.success(data.message)
+
       router.push({ name: 'dashboard.index' })
     } catch (error: any) {
-      if (typeof error.response.data.error === 'object') {
+      if (error === 'object') {
         loginError.email = error.response.data.error.email || []
         loginError.password = error.response.data.error.password || []
         loginError.remember_token = error.response.data.error.remember_token || []
-      }
-    } finally {
-      isSubmitting.value = false
+      } else $toast.error(error)
     }
   }
 
   return {
     models,
-    isSubmitting,
+    isLoading: $http.isLoading,
     loginForm,
     loginError,
     login,
