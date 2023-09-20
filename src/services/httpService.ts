@@ -1,7 +1,13 @@
 import { Ref, ref } from 'vue'
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from 'axios'
 import { ProgressFinisher, useProgress } from '@marcoschulte/vue3-progress'
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
-import { $storage } from '@/services'
+import { ValidationResponse } from '@/modules/auth/interfaces'
+import { useSessionStore } from '@/modules/auth/stores'
 
 class HttpService {
   private axiosInstance: AxiosInstance
@@ -28,18 +34,20 @@ class HttpService {
   }
 
   private updateHeader(config: any) {
-    const token = $storage.get($storage.TOKEN)
+    // falta tipear por tiempo
+    // const token = $storage.get($storage.TOKEN)
+    const token = useSessionStore().getToken()
     if (token) config.headers['Authorization'] = `Bearer ${token}`
     return config
   }
 
   private setupInterceptors() {
     this.axiosInstance.interceptors.request.use(
-      (config: any) => {
+      (config: AxiosRequestConfig) => {
         this.progressStart()
         return this.updateHeader(config)
       },
-      (error: any) => {
+      (error: AxiosError) => {
         this.progressFinish()
         return Promise.reject(error)
       }
@@ -50,21 +58,25 @@ class HttpService {
         this.progressFinish()
         return response
       },
-      (error: any) => {
+      (error: AxiosError<ValidationResponse>) => {
         this.progressFinish()
-
         if (!error.response) {
           return Promise.reject('Error inesperado, inténtelo mas tarde!') // error de axios
         } else if (typeof error.response.data.error === 'string') {
           return Promise.reject(error.response.data.error) // error general de la api
         } else {
-          return Promise.reject(error.response.data.error) // error de validacion
+          return Promise.reject(Object.values(error.response.data.error)[0][0]) // error de validacion (solo se envia uno a la vez como string)
         }
       }
     )
   }
 
-  public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+  public getAxiosInstance(): AxiosInstance {
+    // solo para prubas de desarrollo con axios
+    return this.axiosInstance
+  }
+
+  public async get(url: string, config?: AxiosRequestConfig): Promise<any> {
     const response = await this.axiosInstance.get(url, config)
     return response.data
   }
@@ -78,11 +90,11 @@ class HttpService {
     return response.data
   }
 
-  public async put<T>(
+  public async put(
     url: string,
     data?: any,
     config?: AxiosRequestConfig
-  ): Promise<T> {
+  ): Promise<any> {
     const response = await this.axiosInstance.put(url, data, config)
     return response.data
   }

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useLogin } from '../composables'
-import { Model } from '../interfaces';
+import { LoginModel } from '../interfaces';
 
-const { models, isLoading, loginForm, loginError, login } = useLogin()
+const { LoginModel, isLoading, loginForm, login } = useLogin()
 </script>
 
 <template>
@@ -29,8 +29,8 @@ const { models, isLoading, loginForm, loginError, login } = useLogin()
                         class="style-chooser"
                         placeholder="Seleccionar:"
                         v-model="loginForm.model"
-                        :options="models"
-                        :reduce="(model: Model) => model.name"
+                        :options="LoginModel"
+                        :reduce="(loginModel: LoginModel) => loginModel.name"
                         label="label"
                       />
                     </div>
@@ -44,12 +44,8 @@ const { models, isLoading, loginForm, loginError, login } = useLogin()
                         id="inputEmailAddress"
                         type="email"
                         placeholder="Ingrese su correo"
-                        :class="{ 'is-invalid': loginError.email[0] }"
                         v-model="loginForm.email"
                       />
-                      <div v-if="loginError.email[0]" class="invalid-feedback">
-                        {{ loginError.email[0] }}
-                      </div>
                     </div>
                     <!-- Form Group (password)-->
                     <div class="mb-3">
@@ -61,15 +57,8 @@ const { models, isLoading, loginForm, loginError, login } = useLogin()
                         id="inputPassword"
                         type="password"
                         placeholder="Enter password"
-                        :class="{ 'is-invalid': loginError.password[0] }"
                         v-model="loginForm.password"
                       />
-                      <div
-                        v-if="loginError.password[0]"
-                        class="invalid-feedback"
-                      >
-                        {{ loginError.password[0] }}
-                      </div>
                     </div>
                     <!-- Form Group (remember password checkbox)-->
                     <div class="mb-3">

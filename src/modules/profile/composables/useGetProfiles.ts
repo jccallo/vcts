@@ -2,8 +2,7 @@ import { Ref, ref, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import { $helper, $http } from '@/services'
 
-// useProfile
-export const useProfile = () => {
+export const useGetProfiles = () => {
   const route = useRoute()
   const router = useRouter()
 
@@ -18,7 +17,7 @@ export const useProfile = () => {
   const query: Ref<string> = ref('')
 
   const getAllProfiles = async () => {
-    const response = await $http.get<any>(`/profiles?page=${page.value}&perpage=${perpage.value}&query=${query.value}`)
+    const response = await $http.get(`/profiles?page=${page.value}&perpage=${perpage.value}&query=${query.value}`)
     profiles.value = response.data
     links.value = response.meta.links.map((link: any) => {
       if (link.label === '&laquo; Previous') link.label = '‹'
@@ -51,6 +50,7 @@ export const useProfile = () => {
 
   watch(() => query.value, async () => {
     router.push({ name: 'profiles.index', query: { page: '1', perpage: '10', query: query.value } })
+    console.log('si1', 'si1')
   })
 
   watch(() => route.fullPath, async () => {
@@ -59,6 +59,7 @@ export const useProfile = () => {
 
   onMounted(async () => {
     await loadURL()
+    console.log('si2', 'si2')
   })
 
   return {
@@ -73,5 +74,3 @@ export const useProfile = () => {
     goTo,
   }
 }
-
-// useUll

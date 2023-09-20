@@ -2,6 +2,7 @@
 const props = defineProps<{
   menssage: string
   type: string
+  fontSize: number
 }>()
 </script>
 
@@ -11,7 +12,7 @@ const props = defineProps<{
       <i class="fa-solid fa-circle-exclamation"></i>
     </div>
     <div class="alert-icon-content">
-      {{ props.menssage }}
+      <span :style="`font-size: ${fontSize}px;`">{{ props.menssage }}</span>
     </div>
   </div>
 </template>

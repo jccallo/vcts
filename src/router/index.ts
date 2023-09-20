@@ -6,7 +6,7 @@ import ProfileRutes from '@/modules/profile/routes'
 import CustomerRoutes from '@/modules/customer/routes'
 import DashboardRoutes from '@/modules/dashboard/routes'
 import BeneficiaryRoutes from '@/modules/beneficiary/routes'
-import { $storage } from '@/services'
+import { useSessionStore } from '@/modules/auth/stores';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -35,9 +35,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  const sessionStore = useSessionStore()
   const needsAuth = to.meta.requiresAuth
-  const token = $storage.get($storage.TOKEN)
-  const remember_token = $storage.get($storage.REMEMBER_TOKEN)
+  const token = sessionStore.getToken()
+  const remember_token = sessionStore.getRememberToken()
   if (needsAuth) {
     if (!token) next({ name: 'auth.login' })
     else next()
@@ -45,8 +46,7 @@ router.beforeEach((to, from, next) => {
   if (to.name === 'auth.login') {
     if (remember_token && token) next({ name: 'dashboard.index' })
     else {
-      $storage.remove($storage.TOKEN)
-      $storage.remove($storage.REMEMBER_TOKEN)
+      sessionStore.remove()
       next()
     }
   }

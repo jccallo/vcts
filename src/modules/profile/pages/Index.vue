@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useProfile } from '../composables/useProfile'
+import { useGetProfiles } from '../composables'
 
-const { profiles, links, from, to, total, perpage, query, goTo } = useProfile()
+const { profiles, links, from, to, total, perpage, query, goTo } = useGetProfiles()
 </script>
 
 <template>
@@ -160,4 +160,4 @@ const { profiles, links, from, to, total, perpage, query, goTo } = useProfile()
       </div>
     </div>
   </div>
-</template>
+</template>../composables/useGetProfiles

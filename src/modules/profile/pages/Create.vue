@@ -1,26 +1,6 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
-import { useProfileCreate, useUpload } from '../composables'
-
-const { profileForm, createProfile } = useProfileCreate()
-const { uploadImage } = useUpload()
-
-const image = reactive({
-  file: null
-})
-
-const onImagenChange = (e: any) => {
-  image.file = e.target.files[0]
-}
-
-const saveImage = async () => {
-  await uploadImage(image)
-}
-
-const onSubmit = async () => {
-  await createProfile()
-  console.log(profileForm);
-}
+import { useCreateProfile } from '../composables'
+const { imageUrl, profileForm, branchNames, roleNames, onImageChange, createProfile } = useCreateProfile()
 </script>
 
 <template>
@@ -53,12 +33,13 @@ const onSubmit = async () => {
           <div class="card-header">Foto de Perfil</div>
           <div class="card-body text-center">
             <!-- Profile picture image-->
-            <img class="img-account-profile rounded-circle mb-2" src="../../../assets/img/demo/user-placeholder.svg" alt="" />
+            <img class="img-account-profile rounded-circle mb-2" v-if="imageUrl" :src="imageUrl" alt="Foto de Perfil" />
+            <img class="img-account-profile rounded-circle mb-2" v-else src="../../../assets/img/demo/user-placeholder.svg" alt="Foto de Perfil" />
             <!-- Profile picture help block-->
             <div class="small font-italic text-muted mb-4">JPG o PNG no mayor a 5 MB</div>
             <!-- Profile picture upload button-->
-            <input class="form-control mb-3" type="file" @change="onImagenChange">
-            <button class="btn btn-primary" type="button" @click="saveImage">Guardar imagen</button>
+            <input class="form-control mb-3" type="file" accept=".jpg, .jpeg, .png" @change="onImageChange">
+            <!-- <button class="btn btn-primary" type="button">Guardar imagen</button> -->
           </div>
         </div>
       </div>
@@ -67,7 +48,7 @@ const onSubmit = async () => {
         <div class="card mb-4">
           <div class="card-header">Detalles de la Cuenta</div>
           <div class="card-body">
-            <form @submit.prevent="onSubmit">
+            <form @submit.prevent="createProfile">
 
               <!-- Form Row-->
               <div class="row gx-3">
@@ -80,7 +61,7 @@ const onSubmit = async () => {
                 <!-- Form Group (telefono)-->
                 <div class="col-md-4">
                   <label class="small mb-1" for="inputFirstName">Numero de documento</label>
-                  <input class="form-control" id="inputFirstName" type="number"
+                  <input class="form-control" id="inputFirstName" type="text"
                     v-model="profileForm.document_number" />
                 </div>
                 <!-- Form Group (direccion)-->
@@ -92,7 +73,7 @@ const onSubmit = async () => {
                 <!-- Form Group (direccion)-->
                 <div class="col-md-6 mb-3">
                   <label class="small mb-1" for="inputLastName">Teléfono</label>
-                  <input class="form-control" id="inputLastName" type="number"
+                  <input class="form-control" id="inputLastName" type="text"
                     v-model="profileForm.phone" />
                 </div>
                 <!-- Form Group (genero)-->
@@ -131,15 +112,27 @@ const onSubmit = async () => {
                 <!-- Form Group (email address)-->
                 <div class="col-md-6 mb-3">
                   <label class="small mb-1">Sucursal</label>
-                  <input class="form-control" type="email"
-                    v-model="profileForm.email" />
+                  <v-select
+                    class="style-chooser"
+                    placeholder="Seleccionar:"
+                    v-model="profileForm.branch_id"
+                    :options="branchNames"
+                    :reduce="(branch: any) => branch.id"
+                    label="name"
+                  />
                 </div>
 
                 <!-- Form Group (password)-->
                 <div class="col-md-6 mb-3">
-                  <label class="small mb-1" for="inputFirstName">Rol</label>
-                  <input class="form-control" id="inputFirstName" type="text"
-                    v-model="profileForm.password" />
+                  <label class="small mb-1">Rol</label>
+                  <v-select
+                    class="style-chooser"
+                    placeholder="Seleccionar:"
+                    v-model="profileForm.role_id"
+                    :options="roleNames"
+                    :reduce="(role: any) => role.id"
+                    label="name"
+                  />
                 </div>
               </div>
 
@@ -153,8 +146,8 @@ const onSubmit = async () => {
 
                 <!-- Form Group (password)-->
                 <div class="col-md-6 mb-3">
-                  <label class="small mb-1" for="inputFirstName">Contraseña</label>
-                  <input class="form-control" id="inputFirstName" type="text"
+                  <label class="small mb-1">Contraseña</label>
+                  <input class="form-control" type="text"
                     v-model="profileForm.password" />
                 </div>
               </div>
@@ -166,5 +159,5 @@ const onSubmit = async () => {
       </div>
     </div>
   </div>
-  <pre>{{ profileForm }}</pre>
+  <pre>{{ profileForm }}s</pre>
 </template>

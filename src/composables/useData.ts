@@ -17,7 +17,7 @@ export const useData = (resource: string) => {
   const query: Ref<string> = ref('')
 
   const getAllData = async () => {
-    const response = await $http.get<any>(`/${resource}?page=${page.value}&perpage=${perpage.value}&query=${query.value}`)
+    const response = await $http.get(`/${resource}?page=${page.value}&perpage=${perpage.value}&query=${query.value}`)
     data.value = response.data
     links.value = response.meta.links.map((link: any) => {
       if (link.label === '&laquo; Previous') link.label = '‹'

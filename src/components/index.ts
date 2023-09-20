@@ -1,1 +1,1 @@
-export { default as ValidationAlert } from './ValidationAlert.vue'
+export { default as ValidationAlert } from './ValidationAlert.vue';

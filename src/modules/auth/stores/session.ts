@@ -1,8 +1,11 @@
 import { defineStore } from 'pinia'
-import { Session } from '../interfaces'
+import { LoginResponse } from '../interfaces'
 
 export const useSessionStore = defineStore('session', {
-  state: (): Session<any> => ({
+  state: (): LoginResponse => ({
+    message: '',
+    token: '',
+    remeber_token: false,
     model: '',
     user: null,
   }),
@@ -10,13 +13,31 @@ export const useSessionStore = defineStore('session', {
     
   },
   actions: {
-    setSession(model: string, user: any): void {
-      this.model = model
-      this.user = user
+    set(loginResponse: LoginResponse): void {
+      this.message = loginResponse.message
+      this.token = loginResponse.token
+      this.remeber_token = loginResponse.remeber_token
+      this.model = loginResponse.model
+      this.user = loginResponse.user
     },
-    removeSession(): void {
+    remove(): void {
+      this.message = ''
+      this.token = ''
+      this.remeber_token = false
       this.model = ''
       this.user = null
+    },
+    getToken(): string {
+      return this.token
+    },
+    setToken(token: string): void {
+      this.token = token
+    },
+    getRememberToken(): boolean {
+      return this.remeber_token
+    },
+    setRememberToken(remeber_token: boolean): void {
+      this.remeber_token = remeber_token
     }
   },
   persist: true

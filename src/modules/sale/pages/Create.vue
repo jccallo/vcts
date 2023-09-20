@@ -92,6 +92,7 @@ onMounted(async () => {
           v-if="validationError"
           :menssage="validationError"
           type="danger"
+          :font-size="16"
         />
         <!-- general -->
         <div class="card mb-4">
