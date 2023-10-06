@@ -2,7 +2,7 @@
 import { reactive, onMounted, watch } from 'vue'
 import { useCreate, usePluck } from '../composables'
 import { Sale } from '../interfaces'
-import { ValidationAlert } from '@/components'
+import { ValidationAlert } from '@/components/Alert'
 
 const { create, getProfiles, validationError } = useCreate()
 const {
@@ -90,7 +90,7 @@ onMounted(async () => {
         <!-- alert -->
         <ValidationAlert
           v-if="validationError"
-          :menssage="validationError"
+          :message="validationError"
           type="danger"
           :font-size="16"
         />

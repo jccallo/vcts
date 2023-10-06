@@ -1,2 +1,2 @@
-export { default as Create } from './Create.vue'
-export { default as Index } from './Index.vue'
+export { default as CreatePage } from './CreatePage.vue'
+export { default as IndexPage } from './IndexPage.vue'

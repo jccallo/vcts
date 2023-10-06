@@ -1,21 +1,15 @@
-import { reactive, ref } from 'vue'
-import { AxiosResponse } from 'axios'
+import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { $http, $toast } from '@/services'
-import { useSessionStore } from '../stores'
-import { LoginForm, LoginModel, LoginResponse } from '../interfaces'
+import { useAuthSessionStore } from '../stores'
+import { AuthResponse, LoginForm } from '../interfaces'
+import { HttpResponse, ModifiedError } from '@/interfaces'
 
 export const useLogin = () => {
   const router = useRouter()
-  const sessionStore = useSessionStore()
-
-  const LoginModel = ref<LoginModel[]>([
-    { name: 'Profile', label: 'Colaborador' },
-    { name: 'User', label: 'Administrador' },
-  ])
+  const authSession = useAuthSessionStore()
 
   const loginForm = reactive<LoginForm>({
-    model: 'User',
     email: '',
     password: '',
     remember_token: false,
@@ -23,17 +17,16 @@ export const useLogin = () => {
 
   const login = async () => {
     await $http
-      .post<AxiosResponse<LoginResponse>>('/login', loginForm)
-      .then(({ data }) => {
-        sessionStore.set(data)
-        $toast.success(data.message)
+      .post<HttpResponse<AuthResponse>>('/login', loginForm)
+      .then((response) => {
+        authSession.set(response.data)
+        $toast.success(response.data.message)
         router.push({ name: 'dashboard.index' })
       })
-      .catch((error: string) => $toast.error(error))
+      .catch((error: ModifiedError) => $toast.error(error.message))
   }
 
   return {
-    LoginModel,
     isLoading: $http.isLoading,
     loginForm,
     login,

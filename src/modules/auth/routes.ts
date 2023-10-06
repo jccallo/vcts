@@ -1,5 +1,5 @@
 import { RouteRecordRaw } from 'vue-router'
-import { Login } from './pages'
+import { LoginPage } from './pages'
 import Module from './Module.vue'
 
 const routes:RouteRecordRaw[] = [
@@ -10,7 +10,7 @@ const routes:RouteRecordRaw[] = [
       {
         path: '',
         name: 'auth.login',
-        component: Login,
+        component: LoginPage,
       },
     ],
   },

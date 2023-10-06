@@ -1,17 +1,17 @@
-import { useSessionStore } from '@/modules/auth/stores'
+// import { useAuthSessionStore } from '@/modules/auth/stores'
 import { $http, $toast } from '@/services'
 import { Ref, ref } from 'vue'
 
 export const useCreate = () => {
-  const session = useSessionStore()
+  // const authSession = useAuthSessionStore()
   const profiles: Ref<any> = ref([])
   const validationError = ref<string>('')
 
   const create = async (data: any) => {
     try {
       const sendData = { ...data }
-      sendData.branch_id = session.user.branch.id
-      sendData.profile_id = session.user.id
+      // sendData.branch_id = authSession.user?.branch.id
+      // sendData.profile_id = authSession.user?.id
       sendData.certificates = sendData.certificates.join(', ')
       const response = await $http.post<any>('/sales', sendData)
       $toast.success(`Venta #${response.data.id} agregada.`)

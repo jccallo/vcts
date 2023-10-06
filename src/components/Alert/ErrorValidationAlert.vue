@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { Pluck } from '../../interfaces';
+
 const props = defineProps<{
-  menssage: string
+  errors: Pluck[]
   type: string
   fontSize: number
 }>()
@@ -12,7 +14,6 @@ const props = defineProps<{
       <i class="fa-solid fa-circle-exclamation"></i>
     </div>
     <div class="alert-icon-content">
-      <span :style="`font-size: ${fontSize}px;`">{{ props.menssage }}</span>
     </div>
   </div>
 </template>

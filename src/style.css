@@ -15,6 +15,11 @@
   color: #69707a;
 }
 
+.vs__dropdown-toggle:focus {
+  
+  border-color: green !important;
+}
+
 .style-chooser .vs__clear,
 .style-chooser .vs__open-indicator {
   fill: #69707a;
@@ -39,4 +44,18 @@
 .fixed-btn-transparent-dark:active {
   background-color: rgba(33, 40, 50, 0.2) !important;
   border-color: transparent !important;
+}
+
+/* datatable */
+.datatable-field {
+  display: inline-block !important; 
+  width: auto !important; 
+}
+
+.datatable-table {
+  font-size: 14px !important; 
+}
+
+.datatable-content {
+  border-top: none !important; 
 }

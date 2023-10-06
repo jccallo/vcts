@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { useLogin } from '../composables'
-import { LoginModel } from '../interfaces';
 
-const { LoginModel, isLoading, loginForm, login } = useLogin()
+const { isLoading, loginForm, login } = useLogin()
 </script>
 
 <template>
@@ -20,20 +19,6 @@ const { LoginModel, isLoading, loginForm, login } = useLogin()
                 <div class="card-body">
                   <!-- Login form-->
                   <form autocomplete="off" @submit.prevent="login">
-                    <!-- Form Group (email address)-->
-                    <div class="mb-3">
-                      <label class="small mb-1"
-                        >Modo</label
-                      >
-                      <v-select
-                        class="style-chooser"
-                        placeholder="Seleccionar:"
-                        v-model="loginForm.model"
-                        :options="LoginModel"
-                        :reduce="(loginModel: LoginModel) => loginModel.name"
-                        label="label"
-                      />
-                    </div>
                     <!-- Form Group (email address)-->
                     <div class="mb-3">
                       <label class="small mb-1" for="inputEmailAddress"
@@ -102,7 +87,6 @@ const { LoginModel, isLoading, loginForm, login } = useLogin()
         </div>
       </main>
     </div>
-    {{ login }}
     <div id="layoutAuthentication_footer">
       <footer class="footer-admin mt-auto footer-dark">
         <div class="container-xl px-4">

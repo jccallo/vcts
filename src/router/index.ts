@@ -1,12 +1,12 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
 import Module from '@/Module.vue'
 import AuthRoutes from '@/modules/auth/routes'
-import SaleRoutes from '@/modules/sale/routes';
+import SaleRoutes from '@/modules/sale/routes'
 import ProfileRutes from '@/modules/profile/routes'
 import CustomerRoutes from '@/modules/customer/routes'
 import DashboardRoutes from '@/modules/dashboard/routes'
 import BeneficiaryRoutes from '@/modules/beneficiary/routes'
-import { useSessionStore } from '@/modules/auth/stores';
+import { useAuthSessionStore } from '@/modules/auth/stores'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -19,11 +19,11 @@ const routes: RouteRecordRaw[] = [
       ...ProfileRutes,
       ...CustomerRoutes,
       ...BeneficiaryRoutes,
-    ]
+    ],
   },
   ...AuthRoutes,
   {
-    path: '/:pathMatch(.*)*', 
+    path: '/:pathMatch(.*)*',
     redirect: '/app',
   },
 ]
@@ -35,22 +35,28 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const sessionStore = useSessionStore()
+  const authSession = useAuthSessionStore()
   const needsAuth = to.meta.requiresAuth
-  const token = sessionStore.getToken()
-  const remember_token = sessionStore.getRememberToken()
+  const token = authSession.getToken()
+  const remember_token = authSession.getRememberToken()
   if (needsAuth) {
-    if (!token) next({ name: 'auth.login' })
-    else next()
-  }
-  if (to.name === 'auth.login') {
-    if (remember_token && token) next({ name: 'dashboard.index' })
-    else {
-      sessionStore.remove()
+    if (!token) {
+      authSession.remove()
+      next({ name: 'auth.login' })
+    } else next()
+  } else if (to.name === 'auth.login') {
+    if (!remember_token && !token) {
       next()
+    } else if (!remember_token && token) {
+      authSession.remove()
+      next()
+    } else {
+      next({ name: 'dashboard.index' })
     }
+  } else {
+    console.log('from:', from.fullPath)
+    next()
   }
-  console.log('from:', from.fullPath)
 })
 
 export default router

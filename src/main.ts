@@ -14,6 +14,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css'
 import "@marcoschulte/vue3-progress/dist/index.css";
 import 'vue-toastification/dist/index.css'
 import 'vue-select/dist/vue-select.css'
+// import './assets/css/datatables.css'
 import './assets/css/styles.css'
 import './style.css'
 

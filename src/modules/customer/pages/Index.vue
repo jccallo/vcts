@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useData } from '@/composables/useData'
+import { useDatatable } from '@/composables'
 
-const { data, links, from, to, total, perpage, query, goTo }= useData('customers')
+const { data, links, from, to, total, perpage, query, goTo }= useDatatable<any>('customers')
 
 
 </script>
@@ -97,7 +97,7 @@ const { data, links, from, to, total, perpage, query, goTo }= useData('customers
                 </tr>
               </thead>
               <tbody>
-                <tr v-if="data.length > 0" v-for="item in data" key="item.id">
+                <tr v-if="data && data.length > 0" v-for="item in data" key="item.id">
                   <td>
                     <div class="d-flex align-items-center">
                       <div class="avatar me-2">
@@ -142,12 +142,12 @@ const { data, links, from, to, total, perpage, query, goTo }= useData('customers
           </div>
           <!-- footer -->
           <div class="datatable-bottom">
-            <div v-if="data.length > 0" class="datatable-info">Mostrando {{ from }} a {{ to }} de {{ total }} entradas</div>
+            <div v-if="data && data.length > 0" class="datatable-info">Mostrando {{ from }} a {{ to }} de {{ total }} entradas</div>
             <nav class="datatable-pagination">
               <ul class="datatable-pagination-list">
                 <li
                   class="datatable-pagination-list-item"
-                  v-if="links.length > 3"
+                  v-if="links && links.length > 3"
                   v-for="(link, index) in links"
                   :key="index"
                   :class="{
@@ -169,4 +169,4 @@ const { data, links, from, to, total, perpage, query, goTo }= useData('customers
       </div>
     </div>
   </div>
-</template>
+</template>@/composables/useDatatable

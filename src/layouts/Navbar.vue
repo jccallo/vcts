@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useLogout } from '@/modules/auth/composables'
-import { useSessionStore } from '@/modules/auth/stores';
+import { useAuthSessionStore } from '@/modules/auth/stores';
 
-const session = useSessionStore()
+const authSession = useAuthSessionStore()
 const { isLoading, logout } = useLogout()
 </script>
 
@@ -17,7 +17,7 @@ const { isLoading, logout } = useLogout()
     <!-- * * Tip * * You can use text or an image for your navbar brand.-->
     <!-- * * * * * * When using an image, we recommend the SVG format.-->
     <!-- * * * * * * Dimensions: Maximum height: 32px, maximum width: 240px-->
-    <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="index.html">VCZoluciones</a>
+    <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="index.html">VISA INTERNATIONAL CLUB</a>
     <!-- Navbar Search Input-->
     <!-- * * Note: * * Visible only on and above the lg breakpoint-->
     <!-- <form class="form-inline me-auto d-none d-lg-block me-3">
@@ -56,8 +56,8 @@ const { isLoading, logout } = useLogout()
           <h6 class="dropdown-header d-flex align-items-center">
             <img class="dropdown-user-img" src="../assets/img/illustrations/profiles/profile-1.png" />
             <div class="dropdown-user-details">
-              <div v-if="session.user" class="dropdown-user-details-name">{{ session.user.name }}</div>
-              <div v-if="session.user" class="dropdown-user-details-email">{{ session.user.email }}</div>
+              <div v-if="authSession.user" class="dropdown-user-details-name">{{ authSession.user.name }}</div>
+              <div v-if="authSession.user" class="dropdown-user-details-email">{{ authSession.user.email }}</div>
             </div>
           </h6>
           <div class="dropdown-divider"></div>

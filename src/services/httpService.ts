@@ -6,8 +6,8 @@ import axios, {
   AxiosResponse,
 } from 'axios'
 import { ProgressFinisher, useProgress } from '@marcoschulte/vue3-progress'
-import { ValidationResponse } from '@/modules/auth/interfaces'
-import { useSessionStore } from '@/modules/auth/stores'
+import { ErrorResponse } from '@/interfaces'
+import { useAuthSessionStore } from '@/modules/auth/stores'
 
 class HttpService {
   private axiosInstance: AxiosInstance
@@ -36,7 +36,8 @@ class HttpService {
   private updateHeader(config: any) {
     // falta tipear por tiempo
     // const token = $storage.get($storage.TOKEN)
-    const token = useSessionStore().getToken()
+    const token = useAuthSessionStore().getToken()
+    console.log('token', token)
     if (token) config.headers['Authorization'] = `Bearer ${token}`
     return config
   }
@@ -58,15 +59,9 @@ class HttpService {
         this.progressFinish()
         return response
       },
-      (error: AxiosError<ValidationResponse>) => {
+      (error: AxiosError<ErrorResponse>) => {
         this.progressFinish()
-        if (!error.response) {
-          return Promise.reject('Error inesperado, inténtelo mas tarde!') // error de axios
-        } else if (typeof error.response.data.error === 'string') {
-          return Promise.reject(error.response.data.error) // error general de la api
-        } else {
-          return Promise.reject(Object.values(error.response.data.error)[0][0]) // error de validacion (solo se envia uno a la vez como string)
-        }
+        return error
       }
     )
   }
@@ -76,7 +71,7 @@ class HttpService {
     return this.axiosInstance
   }
 
-  public async get(url: string, config?: AxiosRequestConfig): Promise<any> {
+  public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.axiosInstance.get(url, config)
     return response.data
   }
