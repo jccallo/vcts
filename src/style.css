@@ -59,3 +59,20 @@
 .datatable-content {
   border-top: none !important; 
 }
+
+/* live search personalizado */
+.jc-live-search {
+  position: absolute;
+  width: 100%;
+}
+
+.jc-live-search {
+  position: absolute;
+  
+}
+
+.jc-live-search .list-group {
+  width: 100% !important;
+  z-index: 1000;
+}
+

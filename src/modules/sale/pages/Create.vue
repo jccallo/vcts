@@ -1,25 +1,22 @@
 <script setup lang="ts">
-import { reactive, onMounted, watch } from 'vue'
-import { useCreate, usePluck } from '../composables'
-import { Sale } from '../interfaces'
-import { ValidationAlert } from '@/components/Alert'
+import { reactive, onMounted, watch, ref } from 'vue'
+import { Modal } from 'bootstrap'
+import { SaleForm } from '../interfaces'
+import {
+  useGetCustomers,
+  useGetCards,
+  useGetBeneficiaries,
+} from '../composables'
 
-const { create, getProfiles, validationError } = useCreate()
-const {
-  customersPluck,
-  cardsPluck,
-  beneficiariesPluck,
-  getCustomersPluck,
-  getCardsPluck,
-  getBeneficiariesPluck,
-} = usePluck()
+const { beneficiaries, getBeneficiaries } = useGetBeneficiaries()
+const { customers, getCustomers } = useGetCustomers()
+const { cards, getCards } = useGetCards()
 
-const formData = reactive<Sale>({
+const formData = reactive<SaleForm>({
   branch_id: 0,
-  profile_id: 0,
-  customer_id: 0,
-  card_id: 0,
-  beneficiary_id: 0,
+  customer_id: '',
+  card_id: '',
+  beneficiary_id: '',
   payment_method: '',
   interest_free: '',
   installments: '',
@@ -34,20 +31,25 @@ const formData = reactive<Sale>({
 watch(
   () => formData.customer_id,
   async () => {
-    formData.card_id = 0
-    if (formData.customer_id) await getCardsPluck(formData.customer_id)
+    formData.card_id = ''
+    if (formData.customer_id) await getCards(formData.customer_id)
   }
 )
 
 const saleCreate = async () => {
-  await create(formData)
+  console.log('crear', 'crear')
 }
+const staticBackdrop = ref(null)
 
 onMounted(async () => {
-  await getProfiles()
-  await getBeneficiariesPluck()
-  await getCustomersPluck()
-  if (formData.customer_id) await getCardsPluck(formData.customer_id)
+  await getBeneficiaries()
+  await getCustomers()
+  if (formData.customer_id) await getCards(formData.customer_id)
+
+  if (staticBackdrop.value) {
+    const modal = new Modal(staticBackdrop.value)
+    modal.show()
+  }
 })
 </script>
 
@@ -67,9 +69,9 @@ onMounted(async () => {
             </h1>
           </div>
           <div class="col-12 col-xl-auto mb-3">
-            <a
+            <routerLink
               class="btn btn-sm btn-light text-primary"
-              href="user-management-list.html"
+              :to="{ name: 'sales.index' }"
             >
               <vue-feather
                 type="arrow-left"
@@ -77,7 +79,7 @@ onMounted(async () => {
                 class="me-1"
               ></vue-feather>
               Volver a la Lista de Ventas
-            </a>
+            </routerLink>
           </div>
         </div>
       </div>
@@ -87,50 +89,11 @@ onMounted(async () => {
   <div class="container-xl px-4 mt-4">
     <div class="row">
       <div class="col-xl-12">
-        <!-- alert -->
-        <ValidationAlert
-          v-if="validationError"
-          :message="validationError"
-          type="danger"
-          :font-size="16"
-        />
         <!-- general -->
         <div class="card mb-4">
-          <div class="card-header">General</div>
+          <div class="card-header">Formulario de Venta</div>
           <div class="card-body">
             <form>
-              <!-- Form Row-->
-              <!-- <div class="row gx-3">
-                
-                <div class="col-md-5 mb-3">
-                  <label class="small mb-1" for="salebranch"
-                    >Sede o Sucursal</label
-                  >
-                  <select class="form-select" id="salebranch" v-model="formData.branch_id">
-                    <option selected disabled>Seleccionar:</option>
-                    <option value="1">Administrator</option>
-                    <option value="2">Registered</option>
-                    <option value="3">Editor</option>
-                    <option value="4">Guest</option>
-                  </select>
-                </div>
-
-                
-                <div class="col-md-7 mb-3">
-                  <label class="small mb-1"
-                    >Asesor o Agente</label
-                  >
-                  <v-select
-                    class="style-chooser"
-                    placeholder="Seleccionar:"
-                    v-model="formData.profile_id"
-                    :options="profiles"
-                    :reduce="(profile: any) => profile.id"
-                    label="fullname"
-                  />
-                </div>
-              </div> -->
-
               <!-- Form Row-->
               <div class="row gx-3">
                 <!-- Form Group -->
@@ -148,12 +111,19 @@ onMounted(async () => {
 
                 <!-- Form Group -->
                 <div class="col-md-8 mb-3">
-                  <label class="small mb-1">Cliente</label>
+                  <label class="small mb-1">Cliente</label>&nbsp;
+                  <span
+                    class="badge bg-success text-white me-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                    style="cursor: pointer"
+                  >
+                    + Agregar
+                  </span>
                   <v-select
+                    id="clientInput"
                     class="style-chooser"
                     placeholder="Seleccionar:"
                     v-model="formData.customer_id"
-                    :options="customersPluck"
+                    :options="customers"
                     :reduce="(customer: any) => customer.id"
                     label="fullname"
                   />
@@ -181,12 +151,18 @@ onMounted(async () => {
 
                 <!-- Form Group -->
                 <div class="col-md-8 mb-3">
-                  <label class="small mb-1">Tajeta</label>
+                  <label class="small mb-1">Tajeta</label>&nbsp;
+                  <span
+                    class="badge bg-success text-white me-2"
+                    style="cursor: pointer"
+                  >
+                    + Agregar
+                  </span>
                   <v-select
                     class="style-chooser"
                     placeholder="Seleccionar:"
                     v-model="formData.card_id"
-                    :options="cardsPluck"
+                    :options="cards"
                     :reduce="(card: any) => card.id"
                     label="fullname"
                   />
@@ -254,12 +230,18 @@ onMounted(async () => {
 
                 <!-- Form Group -->
                 <div class="col-md-8 mb-3">
-                  <label class="small mb-1">Beneficiario</label>
+                  <label class="small mb-1">Beneficiario</label>&nbsp;
+                  <span
+                    class="badge bg-success text-white me-2"
+                    style="cursor: pointer"
+                  >
+                    + Agregar
+                  </span>
                   <v-select
                     class="style-chooser"
                     placeholder="Seleccionar:"
                     v-model="formData.beneficiary_id"
-                    :options="beneficiariesPluck"
+                    :options="beneficiaries"
                     :reduce="(beneficiary: any) => beneficiary.id"
                     label="fullname"
                   />
@@ -325,6 +307,95 @@ onMounted(async () => {
                 Agregar venta
               </button>
             </form>
+            <!-- Button trigger modal -->
+            <button
+              class="btn btn-primary"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop"
+            >
+              Launch Static Backdrop Modal
+            </button>
+
+            <!-- Modal Customers -->
+            <div
+              class="modal fade"
+              id="staticBackdrop"
+              data-bs-backdrop="static"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Agregar Nuevo Cliente</h5>
+                    <button
+                      class="btn-close"
+                      type="button"
+                      data-bs-dismiss="modal"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row gx-3">
+                      <!-- Form Group -->
+                      <div class="col-12 mb-3">
+                        <label class="small mb-1">Nombres</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                        />
+                      </div>
+
+                      <!-- Form Group -->
+                      <div class="col-12 mb-3">
+                        <label class="small mb-1">Apellidos</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                        />
+                      </div>
+
+                      <!-- Form Group -->
+                      <div class="col-12 mb-3">
+                        <label class="small mb-1">N° de Documento</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                        />
+                      </div>
+
+                      <!-- Form Group -->
+                      <div class="col-12 mb-3">
+                        <label class="small mb-1">Fecha de Nacimiento</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                        />
+                      </div>
+
+                      <!-- Form Group -->
+                      <div class="col-12 mb-3">
+                        <label class="small mb-1">Telefono</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      class="btn btn-secondary"
+                      type="button"
+                      data-bs-dismiss="modal"
+                    >
+                      Cancelar
+                    </button>
+                    <button class="btn btn-primary" type="button">
+                      Agregar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <pre>{{ formData }}</pre>
             <!-- {{ formData.profile_id }} {{ typeof formData.profile_id }}

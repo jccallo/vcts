@@ -41,7 +41,6 @@ export const useDatatable = <T>(resource: string) => {
         total.value = response.meta?.total ?? 0
       })
       .catch((error: AxiosError<ErrorResponse>) => {
-        console.log('error en dc', error)
         $handleError(error)
       })
   }

@@ -1,17 +1,20 @@
-import { ref } from 'vue'
-import { $http, $toast } from '@/services'
+import { Ref, ref } from 'vue'
+import { useHttp, useToast } from '@/composables'
 import { HttpResponse, Pluck } from '@/interfaces'
 
 export const useName = (resource: string) => {
-  const names = ref<Pluck[]>()
+  const { $http } = useHttp()
+  const { $error } = useToast()
+
+  const names: Ref<Pluck[]> = ref([])
 
   const getNames = async () => {
     await $http
       .get<HttpResponse<Pluck[]>>(`/${resource}/names`)
       .then((response) => {
-        names.value = response.data
+        console.log(response)
       })
-      .catch((error: string) => $toast.error(error))
+      .catch((error: string) => $error(error))
   }
 
   return {
