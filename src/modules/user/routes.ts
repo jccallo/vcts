@@ -1,6 +1,7 @@
 import { RouteRecordRaw } from 'vue-router'
 import Module from './Module.vue'
-import { CreatePage, IndexPage } from './pages'
+import Index from './pages/Index.vue'
+import Create from './pages/Create.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -10,13 +11,13 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'users.index',
-        component: IndexPage,
+        component: Index,
       },
-      
+
       {
         path: 'create',
         name: 'users.create',
-        component: CreatePage,
+        component: Create,
       },
     ],
   },

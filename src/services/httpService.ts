@@ -1,4 +1,5 @@
 import { Ref, ref } from 'vue'
+import router from '@/router' // esto es porque useRoter no se puede usar en una clase
 import axios, {
   AxiosError,
   AxiosInstance,
@@ -6,12 +7,13 @@ import axios, {
   AxiosResponse,
 } from 'axios'
 import { ProgressFinisher, useProgress } from '@marcoschulte/vue3-progress'
-import { ErrorResponse } from '@/interfaces'
+import { Error, ErrorResponse, ValidationError } from '@/interfaces'
 import { useAuthSessionStore } from '@/modules/auth/stores'
 
 class HttpService {
   private axiosInstance: AxiosInstance
   private progresses: ProgressFinisher[]
+  public validationErrors: Ref<ValidationError>
   public isLoading: Ref<boolean>
 
   constructor() {
@@ -20,7 +22,8 @@ class HttpService {
     })
     this.setupInterceptors()
     this.progresses = []
-    this.isLoading = ref<boolean>(false)
+    this.validationErrors = ref({})
+    this.isLoading = ref(false)
   }
 
   private progressStart(): void {
@@ -42,26 +45,53 @@ class HttpService {
     return config
   }
 
+  private redirectToLogin() {
+    useAuthSessionStore().remove()
+    router.replace({ name: 'auth.login' })
+  }
+
+  private handleError(error: AxiosError<ErrorResponse>) {
+    if (!error.response) {
+      return Promise.reject<Error>({ message: 'Error inesperado!' })
+    } else if (Array.isArray(error.response.data.error)) {
+      return Promise.reject<Error>({ message: 'Error desconocido!' })
+    } else if (typeof error.response.data.error === 'string') {
+      if (error.response.data.error === import.meta.env.VITE_UNAUTHENTICATED)
+        this.redirectToLogin()
+      return Promise.reject<Error>({ message: error.response.data.error })
+    } else if (typeof error.response.data.error === 'object') {
+      return Promise.reject<Error>({
+        message: 'Errores de validacion!',
+        validations: error.response.data.error,
+      })
+    } else {
+      return Promise.reject<Error>({ message: 'Hubo un error!' })
+    }
+  }
+
   private setupInterceptors() {
     this.axiosInstance.interceptors.request.use(
       (config: AxiosRequestConfig) => {
         this.progressStart()
         return this.updateHeader(config)
       },
-      (error: AxiosError) => {
+      (error: AxiosError<ErrorResponse>) => {
+        console.error('Request AxiosError', error)
         this.progressFinish()
-        return Promise.reject(error)
+        return this.handleError(error)
       }
     )
 
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse) => {
+        console.log('Response AxiosResponse', response)
         this.progressFinish()
         return response
       },
       (error: AxiosError<ErrorResponse>) => {
+        console.error('Response AxiosError', error)
         this.progressFinish()
-        return error
+        return this.handleError(error)
       }
     )
   }
@@ -85,11 +115,11 @@ class HttpService {
     return response.data
   }
 
-  public async put(
+  public async put<T>(
     url: string,
     data?: any,
     config?: AxiosRequestConfig
-  ): Promise<any> {
+  ): Promise<T> {
     const response = await this.axiosInstance.put(url, data, config)
     return response.data
   }

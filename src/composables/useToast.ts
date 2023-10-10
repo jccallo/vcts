@@ -24,5 +24,7 @@ export const useToast = () => {
     $info: info,
     $warning: warning,
     $error: error,
+    $toastError: error,
+    $errorMessage: error,
   }
 }

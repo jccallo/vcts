@@ -1,16 +1,21 @@
-import { ref } from 'vue'
+import { Ref, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import axios, {
   AxiosError,
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
 } from 'axios'
-import { ErrorResponse } from '@/interfaces'
+import { ErrorResponse, ValidationError } from '@/interfaces'
 import { useAuthSessionStore } from '@/modules/auth/stores'
 import { ProgressFinisher, useProgress } from '@marcoschulte/vue3-progress'
 
 export const useHttp = () => {
+  const authSession = useAuthSessionStore()
+  const router = useRouter()
+
   const isLoading = ref<boolean>(false)
+  const validationErrors: Ref<ValidationError> = ref({})
   const progresses: ProgressFinisher[] = []
   const axiosInstance: AxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
@@ -27,9 +32,36 @@ export const useHttp = () => {
   }
 
   const updateHeader = (config: any) => {
-    const token = useAuthSessionStore().getToken()
+    const token = authSession.getToken()
     if (token) config.headers['Authorization'] = `Bearer ${token}`
     return config
+  }
+
+  const cleanValidationErrors = () => {
+    validationErrors.value = {}
+  }
+
+  const setValidationErrors = (errors: ValidationError) => {
+    validationErrors.value = errors
+  }
+
+  const handleError = (error: AxiosError<ErrorResponse>) => {
+    if (!error.response) {
+      return Promise.reject('Error inesperado!')
+    } else if (Array.isArray(error.response.data.error)) {
+      return Promise.reject('Error desconocido!')
+    } else if (typeof error.response.data.error === 'string') {
+      if (error.response.data.error === import.meta.env.VITE_UNAUTHENTICATED) {
+        authSession.remove()
+        router.push({ name: 'auth.login' })
+      }
+      return Promise.reject(error.response.data.error)
+    } else if (typeof error.response.data.error === 'object') {
+      setValidationErrors(error.response.data.error)
+      return Promise.reject('Errores de validacion!')
+    } else {
+      return Promise.reject('Hubo un error!')
+    }
   }
 
   axiosInstance.interceptors.request.use(
@@ -40,7 +72,7 @@ export const useHttp = () => {
     (error: AxiosError<ErrorResponse>) => {
       console.error('Request AxiosError', error)
       progressFinish()
-      return Promise.reject(error)
+      return handleError(error)
     }
   )
 
@@ -48,17 +80,20 @@ export const useHttp = () => {
     (response: AxiosResponse) => {
       console.log('Response AxiosResponse', response)
       progressFinish()
+      cleanValidationErrors()
       return response.data
     },
-    (error: AxiosError) => {
+    (error: AxiosError<ErrorResponse>) => {
       console.error('Response AxiosError', error)
       progressFinish()
-      return Promise.reject(error)
+      return handleError(error)
     }
   )
 
   return {
     $http: axiosInstance,
     $isLoading: isLoading,
+    $errors: validationErrors,
   }
 }
+

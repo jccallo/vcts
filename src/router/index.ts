@@ -1,11 +1,15 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
-import Module from '@/Module.vue'
-import AuthRoutes from '@/modules/auth/routes'
-import SaleRoutes from '@/modules/sale/routes'
-import ProfileRutes from '@/modules/profile/routes'
-import CustomerRoutes from '@/modules/customer/routes'
-import DashboardRoutes from '@/modules/dashboard/routes'
-import BeneficiaryRoutes from '@/modules/beneficiary/routes'
+import Module from '@/modules/Module.vue'
+
+import {
+  AuthRoutes,
+  SaleRoutes,
+  UserRoutes,
+  CustomerRoutes,
+  DashboardRoutes,
+  BeneficiaryRoutes,
+} from '@/modules/routes'
+
 import { useAuthSessionStore } from '@/modules/auth/stores'
 
 const routes: RouteRecordRaw[] = [
@@ -16,7 +20,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       ...DashboardRoutes,
       ...SaleRoutes,
-      ...ProfileRutes,
+      ...UserRoutes,
       ...CustomerRoutes,
       ...BeneficiaryRoutes,
     ],

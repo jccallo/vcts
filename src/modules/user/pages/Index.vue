@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted } from 'vue'
 import { useDatatable } from '@/composables'
-import { User } from '@/interfaces';
+import { User } from '@/interfaces'
 
 import {
   Info,
@@ -14,7 +14,7 @@ import {
 } from '@/components/Datatable'
 
 const {
-  data: profiles,
+  data: users,
   links,
   from,
   to,
@@ -22,7 +22,7 @@ const {
   page,
   perpage,
   query,
-  loadURL
+  loadURL,
 } = useDatatable<User>('users')
 
 onMounted(async () => {
@@ -103,8 +103,8 @@ onMounted(async () => {
               </thead>
               <tbody class="datatable-content">
                 <tr
-                  v-if="profiles.length > 0"
-                  v-for="profile in profiles"
+                  v-if="users.length > 0"
+                  v-for="profile in users"
                   :key="profile.id"
                 >
                   <td>{{ profile.email }}</td>
@@ -128,7 +128,7 @@ onMounted(async () => {
           <div class="row">
             <div class="col-xs-12 col-md-6 mb-sm-2 mb-md-0 pt-2">
               <Info
-                v-if="profiles.length > 0"
+                v-if="users.length > 0"
                 :from="from"
                 :to="to"
                 :total="total"

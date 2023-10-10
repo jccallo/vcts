@@ -2,6 +2,7 @@
 import { useLogout } from '@/modules/auth/composables'
 import { useAuthSessionStore } from '@/modules/auth/stores'
 import { useHelper } from '@/composables'
+import { $helper } from '@/services';
 
 const authSession = useAuthSessionStore()
 const { logout } = useLogout()
@@ -55,7 +56,7 @@ const { $setActiveClass } = useHelper()
           data-bs-target="#collapseEmployees"
           aria-expanded="false"
           aria-controls="collapseEmployees"
-          :class="$setActiveClass('users')"
+          :class="$helper.setActiveClass('users')"
         >
           <div class="nav-link-icon">
             <vue-feather type="users" size="16"></vue-feather>

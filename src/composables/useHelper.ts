@@ -6,7 +6,7 @@ export const useHelper = () => {
     return searchParams.get(queryName)
   }
 
-  const setActiveClass = (resource: string) => { //! revisar
+  const setActiveClass = (resource: string) => { 
     return useRoute().name?.toString().split('.')[0] === resource ? 'active' : ''
   }
   return {

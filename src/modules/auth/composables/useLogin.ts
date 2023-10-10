@@ -3,7 +3,7 @@ import { useRouter } from 'vue-router'
 import { $http, $toast } from '@/services'
 import { useAuthSessionStore } from '../stores'
 import { AuthResponse, LoginForm } from '../interfaces'
-import { HttpResponse, ModifiedError } from '@/interfaces'
+import { HttpResponse } from '@/interfaces'
 
 export const useLogin = () => {
   const router = useRouter()
@@ -23,7 +23,7 @@ export const useLogin = () => {
         $toast.success(response.data.message)
         router.push({ name: 'dashboard.index' })
       })
-      .catch((error: ModifiedError) => $toast.error(error.message))
+      .catch((error) => $toast.error(error.message))
   }
 
   return {

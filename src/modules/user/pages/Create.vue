@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useCreateUser } from '../composables'
+import { useCreate } from '../composables'
 
-const { $validationErrors, userForm, imageState, onImageChange, createUser } = useCreateUser()
+const { validationErrors: $validationErrors, userForm, imageState, onImageChange, createUser } = useCreate()
 </script>
 
 <template>
