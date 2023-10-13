@@ -19,7 +19,7 @@ import './assets/css/styles.css'
 import './style.css'
 
 // js
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import 'bootstrap'
 import './assets/js/scripts.js'
 
 const pinia = createPinia()

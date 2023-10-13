@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useDatatable } from '@/composables'
-import { User } from '@/interfaces'
 
 import {
   Info,
@@ -12,6 +11,7 @@ import {
   DeleteLink,
   ShowLink,
 } from '@/components/Datatable'
+import { User } from '../interfaces';
 
 const {
   data: users,
@@ -104,16 +104,16 @@ onMounted(async () => {
               <tbody class="datatable-content">
                 <tr
                   v-if="users.length > 0"
-                  v-for="profile in users"
-                  :key="profile.id"
+                  v-for="user in users"
+                  :key="user.id"
                 >
-                  <td>{{ profile.email }}</td>
-                  <td>{{ profile.email }}</td>
-                  <td><UserType :is-admin="profile.admin" /></td>
-                  <td><StatusType :is-active="profile.status" /></td>
+                  <td>{{ user.email }}</td>
+                  <td>{{ user.email }}</td>
+                  <td><UserType :is-admin="user.admin" /></td>
+                  <td><StatusType :is-active="user.status" /></td>
                   <td>
-                    <ShowLink :go="{ name: 'users.index' }" />
-                    <EditLink :go="{ name: 'users.index' }" />
+                    <ShowLink :go="{ name: 'users.edit', params: { id: user.id } }" />
+                    <EditLink :go="{ name: 'users.edit', params: { id: user.id } }" />
                     <DeleteLink :go="{ name: 'users.index' }" />
                   </td>
                 </tr>

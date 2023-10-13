@@ -3,7 +3,7 @@ import { Pluck } from "@/interfaces"
 export interface AuthResponse {
   message: string
   token: string
-  remeber_token: boolean
+  remember_token: string | null
   user: AuthUser 
 }
 
@@ -24,6 +24,6 @@ export interface AuthEmployee {
 export interface AuthSession {
   message: string
   token: string
-  remember_token: boolean
-  user: AuthUser | null
+  isRemember: boolean
+  user?: AuthUser
 }

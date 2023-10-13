@@ -1,12 +1,12 @@
 /* vue3-progress */
 .vue3-progress-bar-container .vue3-progress-bar {
-  height: 3px; /* altura */
+  height: 3.5px; /* altura */
   background-color: #0061f2; /* color de fondo */
 }
+/* fin vue3-progress */
 
 /* vue-select */
 .style-chooser .vs__search::placeholder,
-.style-chooser .vs__dropdown-toggle,
 .style-chooser .vs__dropdown-menu {
   padding: 6.819px;
   font-size: 14px;
@@ -15,9 +15,11 @@
   color: #69707a;
 }
 
-.vs__dropdown-toggle:focus {
-  
-  border-color: green !important;
+.style-chooser .vs__dropdown-toggle { /* select que se ve, le quito el border */
+  padding: 6.819px;
+  font-size: 14px;
+  border: none;
+  color: #69707a;
 }
 
 .style-chooser .vs__clear,
@@ -27,6 +29,7 @@
 .style-chooser .vs__selected {
   color: #69707a;
 }
+/* fin vue-select */
 
 /* correcion de estilos para iconos vue-feather */
 .fixed-btn-transparent-dark {
@@ -45,6 +48,7 @@
   background-color: rgba(33, 40, 50, 0.2) !important;
   border-color: transparent !important;
 }
+/* fin correcion de estilos para iconos vue-feather */
 
 /* datatable */
 .datatable-field {
@@ -59,20 +63,29 @@
 .datatable-content {
   border-top: none !important; 
 }
+/* fin datatable */
 
-/* live search personalizado */
-.jc-live-search {
-  position: absolute;
+/* clases extras para vue select */
+.jc-border-select {
+  border-radius: 0.35rem;
+  border: 1px solid #c5ccd6;
+}
+.jc-is-invalid {
+  border: 1px solid #e81500; 
+  border-radius: 0.35rem;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23e81500'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23e81500' stroke='none'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(2.75em + 0.4375rem) center;
+  background-size: calc(0.5em + 0.875rem) calc(0.5em + 0.875rem);
+}
+
+.jc-invalid-feedback {
   width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.8em;
+  color: #e81500;
 }
+/* fin clases extras para vue select */
 
-.jc-live-search {
-  position: absolute;
-  
-}
 
-.jc-live-search .list-group {
-  width: 100% !important;
-  z-index: 1000;
-}
 

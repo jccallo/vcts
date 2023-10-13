@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import { useLogout } from '@/modules/auth/composables'
-import { useAuthSessionStore } from '@/modules/auth/stores'
-import { useHelper } from '@/composables'
 import { $helper } from '@/services';
 
-const authSession = useAuthSessionStore()
-const { logout } = useLogout()
-const { $setActiveClass } = useHelper()
+const { user, isLoading, logout } = useLogout()
 </script>
 
 <template>
@@ -92,7 +88,7 @@ const { $setActiveClass } = useHelper()
           data-bs-target="#collapseCustomers"
           aria-expanded="false"
           aria-controls="collapseCustomers"
-          :class="$setActiveClass('customers')"
+          :class="$helper.setActiveClass('customers')"
         >
           <div class="nav-link-icon">
             <vue-feather type="users" size="16"></vue-feather>
@@ -366,7 +362,7 @@ const { $setActiveClass } = useHelper()
           data-bs-target="#collapseSales"
           aria-expanded="false"
           aria-controls="collapseSales"
-          :class="$setActiveClass('sales')"
+          :class="$helper.setActiveClass('sales')"
         >
           <div class="nav-link-icon">
             <vue-feather type="shopping-cart" size="16"></vue-feather>
@@ -404,7 +400,7 @@ const { $setActiveClass } = useHelper()
           Perfil
         </a>
         <!-- Sidenav Link (Tables)-->
-        <span class="nav-link" style="cursor: pointer" @click.stop="logout">
+        <span class="nav-link" style="cursor: pointer" :disabled="isLoading" @click.stop="logout">
           <div class="nav-link-icon">
             <vue-feather type="filter" size="16"></vue-feather>
           </div>
@@ -416,8 +412,8 @@ const { $setActiveClass } = useHelper()
     <div class="sidenav-footer">
       <div class="sidenav-footer-content">
         <div class="sidenav-footer-subtitle">Conectado como:</div>
-        <div v-if="authSession.user" class="sidenav-footer-title">
-          {{ authSession.user.name }}
+        <div class="sidenav-footer-title">
+          {{ user.name }}
         </div>
       </div>
     </div>

@@ -35,12 +35,12 @@ export const useDatatable = <T>(resource: string) => {
         `/${resource}?page=${page.value}&perpage=${perpage.value}&query=${query.value}`
       )
       .then((response) => {
-        console.log('response', response)
+        // console.log('response', response)
         data.value = response.data
-        links.value = getLinks(response.meta?.links)
-        from.value = response.meta?.from ?? 0
-        to.value = response.meta?.to ?? 0
-        total.value = response.meta?.total ?? 0
+        links.value = getLinks(response.meta.links)
+        from.value = response.meta.from ?? 0
+        to.value = response.meta.to ?? 0
+        total.value = response.meta.total
       })
       .catch((error: Error) => {
         $toast.error(error.message)

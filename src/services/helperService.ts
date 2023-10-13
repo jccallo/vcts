@@ -8,7 +8,6 @@ class HelperService {
   }
 
   setActiveClass(resource: string) {
-    console.log('useRoute()sss', useRoute())
     return useRoute().name?.toString().split('.')[0] === resource ? 'active' : ''
   }
 }

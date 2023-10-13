@@ -1,5 +1,4 @@
 import { Ref, ref } from 'vue'
-import router from '@/router' // esto es porque useRoter no se puede usar en una clase
 import axios, {
   AxiosError,
   AxiosInstance,
@@ -8,7 +7,7 @@ import axios, {
 } from 'axios'
 import { ProgressFinisher, useProgress } from '@marcoschulte/vue3-progress'
 import { Error, ErrorResponse, ValidationError } from '@/interfaces'
-import { useAuthSessionStore } from '@/modules/auth/stores'
+import { useAuth } from '@/modules/auth/composables'
 
 class HttpService {
   private axiosInstance: AxiosInstance
@@ -39,33 +38,28 @@ class HttpService {
   private updateHeader(config: any) {
     // falta tipear por tiempo
     // const token = $storage.get($storage.TOKEN)
-    const token = useAuthSessionStore().getToken()
+    const token = useAuth().getToken()
     console.log('token', token)
     if (token) config.headers['Authorization'] = `Bearer ${token}`
     return config
   }
 
-  private redirectToLogin() {
-    useAuthSessionStore().remove()
-    router.replace({ name: 'auth.login' })
-  }
-
   private handleError(error: AxiosError<ErrorResponse>) {
     if (!error.response) {
-      return Promise.reject<Error>({ message: 'Error inesperado!' })
+      return Promise.reject<Error>({ message: 'Error inesperado' })
     } else if (Array.isArray(error.response.data.error)) {
-      return Promise.reject<Error>({ message: 'Error desconocido!' })
+      return Promise.reject<Error>({ message: 'Error desconocido' })
     } else if (typeof error.response.data.error === 'string') {
       if (error.response.data.error === import.meta.env.VITE_UNAUTHENTICATED)
-        this.redirectToLogin()
+        useAuth().redirectToLogin()
       return Promise.reject<Error>({ message: error.response.data.error })
     } else if (typeof error.response.data.error === 'object') {
       return Promise.reject<Error>({
-        message: 'Errores de validacion!',
+        message: 'Errores de validacion',
         validations: error.response.data.error,
       })
     } else {
-      return Promise.reject<Error>({ message: 'Hubo un error!' })
+      return Promise.reject<Error>({ message: 'Hubo un error' })
     }
   }
 

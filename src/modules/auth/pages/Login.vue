@@ -52,7 +52,7 @@ const { isLoading, loginForm, login } = useLogin()
                           class="form-check-input"
                           id="rememberPasswordCheck"
                           type="checkbox"
-                          v-model="loginForm.remember_token"
+                          v-model="loginForm.isRemember"
                         />
                         <label
                           class="form-check-label"

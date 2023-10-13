@@ -1,9 +1,22 @@
 <script setup lang="ts">
 import { useDatatable } from '@/composables'
+import { onMounted } from 'vue';
+import { Customer } from '../interfaces';
 
-const { data, links, from, to, total, perpage, query, goTo }= useDatatable<any>('customers')
+const {
+  data,
+  links,
+  from,
+  to,
+  total,
+  perpage,
+  query,
+  loadURL,
+} = useDatatable<Customer>('customers')
 
-
+onMounted(async () => {
+  await loadURL()
+})
 </script>
 
 <template>
@@ -158,7 +171,6 @@ const { data, links, from, to, total, perpage, query, goTo }= useDatatable<any>(
                 >
                   <button v-if="link.url"
                     class="datatable-pagination-list-item-link"
-                    @click.prevent="goTo(link.url)"
                   ><span v-html="link.label"></span></button>
                 </li>
               </ul>

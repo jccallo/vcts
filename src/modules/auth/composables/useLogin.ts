@@ -1,29 +1,29 @@
 import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import type { AuthResponse, LoginForm } from '../interfaces'
+import type { DataResponse, Error } from '@/interfaces'
 import { $http, $toast } from '@/services'
-import { useAuthSessionStore } from '../stores'
-import { AuthResponse, LoginForm } from '../interfaces'
-import { HttpResponse } from '@/interfaces'
+import { useAuth } from '../composables'
 
 export const useLogin = () => {
-  const router = useRouter()
-  const authSession = useAuthSessionStore()
+  const { setUser, redirectToDashboard, setTokens } = useAuth()
 
   const loginForm = reactive<LoginForm>({
     email: '',
     password: '',
-    remember_token: false,
+    isRemember: false,
   })
 
   const login = async () => {
     await $http
-      .post<HttpResponse<AuthResponse>>('/login', loginForm)
+      .post<DataResponse<AuthResponse>>('/login', loginForm)
       .then((response) => {
-        authSession.set(response.data)
+        console.log('response', response)
         $toast.success(response.data.message)
-        router.push({ name: 'dashboard.index' })
+        setUser(response.data.user)
+        setTokens(response.data.token, response.data.remember_token)
+        redirectToDashboard()
       })
-      .catch((error) => $toast.error(error.message))
+      .catch((error: Error) => $toast.error(error.message))
   }
 
   return {

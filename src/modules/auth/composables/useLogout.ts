@@ -1,30 +1,29 @@
-import { useRouter } from 'vue-router'
+import type { DataResponse, Error } from '@/interfaces'
 import { $http, $toast } from '@/services'
-import { useAuthSessionStore } from '../stores'
-import { HttpResponse, ModifiedError } from '@/interfaces'
+import { useAuth } from '../composables'
 
 export const useLogout = () => {
-  const router = useRouter()
-  const authSession = useAuthSessionStore()
+  const { user, redirectToLogin, removeUser, removeTokens } = useAuth()
 
   const logout = async () => {
     await $http
-      .delete<HttpResponse<string>>('/logout')
+      .delete<DataResponse<string>>('/logout')
       .then((response) => {
-        console.log('response', response)
-        authSession.remove()
         $toast.success(response.data)
-        router.push({ name: 'auth.login' })
+        removeUser()
+        removeTokens()
+        redirectToLogin()
       })
-      .catch((error: ModifiedError) => {
-        console.log('errorfffff', error)
+      .catch((error: Error) => {
         $toast.error(error.message)
-        authSession.remove()
-        router.push({ name: 'auth.login' })
+        removeUser()
+        removeTokens()
+        redirectToLogin()
       })
   }
 
   return {
+    user,
     isLoading: $http.isLoading,
     logout,
   }

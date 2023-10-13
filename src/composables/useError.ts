@@ -3,12 +3,10 @@ import { AxiosError } from 'axios'
 import { useRouter } from 'vue-router'
 import { useToast } from '@/composables'
 import { ErrorResponse, ValidationError } from '@/interfaces'
-import { useAuthSessionStore } from '@/modules/auth/stores'
 
 export const useError = () => {
   const router = useRouter()
   const { $error } = useToast()
-  const authSession = useAuthSessionStore()
 
   const validationErrors: Ref<ValidationError> = ref({})
 
@@ -28,7 +26,6 @@ export const useError = () => {
     } else if (typeof error.response.data.error === 'string') {
       $error(error.response.data.error)
       if (error.response.data.error === import.meta.env.VITE_UNAUTHENTICATED) {
-        authSession.remove()
         router.push({ name: 'auth.login' })
       }
     } else if (typeof error.response.data.error === 'object') {

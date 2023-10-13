@@ -7,11 +7,9 @@ import axios, {
   AxiosResponse,
 } from 'axios'
 import { ErrorResponse, ValidationError } from '@/interfaces'
-import { useAuthSessionStore } from '@/modules/auth/stores'
 import { ProgressFinisher, useProgress } from '@marcoschulte/vue3-progress'
 
 export const useHttp = () => {
-  const authSession = useAuthSessionStore()
   const router = useRouter()
 
   const isLoading = ref<boolean>(false)
@@ -32,8 +30,6 @@ export const useHttp = () => {
   }
 
   const updateHeader = (config: any) => {
-    const token = authSession.getToken()
-    if (token) config.headers['Authorization'] = `Bearer ${token}`
     return config
   }
 
@@ -52,7 +48,6 @@ export const useHttp = () => {
       return Promise.reject('Error desconocido!')
     } else if (typeof error.response.data.error === 'string') {
       if (error.response.data.error === import.meta.env.VITE_UNAUTHENTICATED) {
-        authSession.remove()
         router.push({ name: 'auth.login' })
       }
       return Promise.reject(error.response.data.error)

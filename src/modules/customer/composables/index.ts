@@ -1,2 +1,2 @@
-export { default as useCustomersCards } from './use.customers.cards';
-export { default as useCustomers } from './use.customers';
+export * from './useCards';
+export * from './useCustomer';

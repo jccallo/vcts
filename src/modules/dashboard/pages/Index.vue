@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import { useAuthSessionStore } from '@/modules/auth/stores'
-
-const authSession = useAuthSessionStore()
+import { useAuth } from '@/modules/auth/composables'
+import { $storage } from '@/services';
+const { user } = useAuth()
 
 onMounted(() => {
-  console.log(authSession.message)
-  console.log(authSession.token)
-  console.log(authSession.remember_token)
-  console.log(authSession.user)
+  console.log(user)
+  console.log($storage.get($storage.TOKEN))
 })
 </script>
 

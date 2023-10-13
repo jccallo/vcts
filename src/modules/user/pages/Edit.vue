@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import { $http } from '@/services';
-import { useCreate } from '../composables'
+import { useUpdate } from '../composables'
 
-const { validationErrors, userForm, imageState, onImageChange, createUser } = useCreate()
+const {
+  userState,
+  userForm,
+  validationErrors,
+  imageState,
+  isLoading,
+  saveImage,
+  saveUser,
+  onImageChange,
+} = useUpdate()
 </script>
 
 <template>
@@ -17,7 +25,7 @@ const { validationErrors, userForm, imageState, onImageChange, createUser } = us
               <div class="page-header-icon">
                 <vue-feather type="user-plus" size="16"></vue-feather>
               </div>
-              Agregar Empleado
+              Editar Usuario
             </h1>
           </div>
           <div class="col-12 col-xl-auto mb-3">
@@ -71,7 +79,14 @@ const { validationErrors, userForm, imageState, onImageChange, createUser } = us
               accept=".jpg, .jpeg, .png"
               @change="onImageChange"
             />
-            <!-- <button class="btn btn-primary" type="button">Guardar imagen</button> -->
+            <button
+              class="btn btn-primary"
+              type="button"
+              @click.prevent="saveImage"
+              :disabled="isLoading"
+            >
+              Guardar imagen
+            </button>
           </div>
         </div>
       </div>
@@ -97,6 +112,7 @@ const { validationErrors, userForm, imageState, onImageChange, createUser } = us
                 <span v-if="validationErrors?.email" class="invalid-feedback">
                   {{ validationErrors.email[0] }}
                 </span>
+                <!-- <span v-if="validationErrors?.email" class="jc-invalid-feedback">{{ validationErrors.email[0] }}</span> -->
               </div>
 
               <!-- Form Group -->
@@ -125,7 +141,7 @@ const { validationErrors, userForm, imageState, onImageChange, createUser } = us
                   :class="{ 'is-invalid': validationErrors?.admin }"
                   v-model="userForm.admin"
                 >
-                  <option selected disabled>Seleccionar:</option>
+                  <option selected>Seleccionar:</option>
                   <option value="true">Si</option>
                   <option value="false">No</option>
                 </select>
@@ -168,9 +184,7 @@ const { validationErrors, userForm, imageState, onImageChange, createUser } = us
 
               <!-- Form Group -->
               <div class="col-md-6 mb-3">
-                <label class="small mb-1" for="document_number"
-                  >N° de documento</label
-                >
+                <label class="small mb-1" for="document_number">N° de documento</label>
                 <input
                   class="form-control"
                   :class="{ 'is-invalid': validationErrors?.document_number }"
@@ -232,17 +246,14 @@ const { validationErrors, userForm, imageState, onImageChange, createUser } = us
                   type="text"
                   v-model="userForm.address"
                 />
-                <span
-                  v-if="validationErrors?.address"
-                  class="invalid-feedback"
-                >
+                <span v-if="validationErrors?.address" class="invalid-feedback">
                   {{ validationErrors.address[0] }}
                 </span>
               </div>
             </div>
             <!-- Submit button-->
-            <button class="btn btn-primary" :disabled="$http.isLoading.value" @click.prevent="createUser">
-              Agregar usuario
+            <button class="btn btn-primary" @click.prevent="saveUser">
+              Guardar detalles
             </button>
           </div>
         </div>
@@ -250,4 +261,6 @@ const { validationErrors, userForm, imageState, onImageChange, createUser } = us
     </div>
   </div>
   <pre>{{ userForm }}</pre>
+  <pre>{{ userState }}</pre>
+  <pre>{{ imageState }}</pre>
 </template>

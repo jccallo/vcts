@@ -1,43 +1,82 @@
-// import { useAuthSessionStore } from '@/modules/auth/stores'
-import { $http, $toast } from '@/services'
-import { Ref, ref } from 'vue'
+import { onMounted, reactive, watch } from "vue"
+import type { Pluck } from "@/interfaces"
+import type { Card } from "@/modules/card/interfaces"
+import type { Customer } from "@/modules/customer/interfaces"
+import type { SaleForm } from "../interfaces"
+import type { Beneficiary } from '@/modules/beneficiary/interfaces'
+import { useCustomer, useCards } from "@/modules/customer/composables"
+import { useBeneficiary } from "@/modules/beneficiary/composables"
+
+const createState = reactive({
+  customerNames: [] as Pluck[],
+  cardNames: [] as Pluck[],
+  beneficiaryNames: [] as Pluck[],
+})
+
+const saleForm = reactive<SaleForm>({
+  branch_id: '',
+  customer_id: '',
+  card_id: '',
+  beneficiary_id: '',
+  payment_method: '',
+  interest_free: '',
+  installments: '',
+  courtesy: '',
+  retailer: '',
+  certificates: [],
+  amount: '',
+  authorization: '',
+  observation: '',
+})
 
 export const useCreate = () => {
-  // const authSession = useAuthSessionStore()
-  const profiles: Ref<any> = ref([])
-  const validationError = ref<string>('')
+  const { customerState, getCustomers } = useCustomer()
+  const { cardState, getCards } = useCards()
+  const { beneficiaryState, getBeneficiaries } = useBeneficiary()
 
-  const create = async (data: any) => {
-    try {
-      const sendData = { ...data }
-      // sendData.branch_id = authSession.user?.branch.id
-      // sendData.profile_id = authSession.user?.id
-      sendData.certificates = sendData.certificates.join(', ')
-      const response = await $http.post<any>('/sales', sendData)
-      $toast.success(`Venta #${response.data.id} agregada.`)
-      validationError.value = ''
-    } catch (error: any) {
-      if (typeof error.response.data.error === 'object') {
-        const arr: Array<any> = Object.values(error.response.data.error)
-        validationError.value = arr[0][0]
+  const getCustomerNames = async () => {
+    await getCustomers('1', '1000')
+    createState.customerNames = customerState.list.map((customer: Customer) => ({
+      id: customer.id,
+      name: `${customer.firstname} ${customer.lastname} / DNI: ${customer.document_number} / Telefono: ${customer.phone}`,
+    }))
+  }
+
+  const getCardNames = async (id: number) => {
+    await getCards(id, '1', '1000')
+    createState.cardNames = cardState.list.map((card: Card) => ({
+      id: card.id,
+      name: `${card.number} / Vencimiento: ${card.expiration_date}`,
+    }))
+  }
+
+  const getBeneficiaryNames = async () => {
+    await getBeneficiaries('1', '1000')
+    createState.beneficiaryNames = beneficiaryState.list.map((beneficiary: Beneficiary) => ({
+      id: beneficiary.id,
+      name: `${beneficiary.name} / DNI: ${beneficiary.document_number} / Telefono: ${beneficiary.phone}`,
+    }))
+  }
+
+  watch(
+    () => saleForm.customer_id,
+    async () => {
+      saleForm.card_id = ''
+      createState.cardNames = []
+      if (saleForm.customer_id) {
+        await getCardNames(+saleForm.customer_id)
       }
     }
-    
-  }
+  )
 
-  const getProfiles = async () => {
-    const response = await $http.get<any>('/profiles')
-    profiles.value = response.data.map((profile: any) => ({
-      id: profile.id,
-      fullname: `${profile.firstname} ${profile.lastname}`,
-    }))
-    console.log('res', profiles.value)
-  }
+  onMounted(async() => {
+    await getCustomerNames()
+    await getBeneficiaryNames()
+    if (saleForm.customer_id) await getCardNames(+saleForm.customer_id)
+  })
 
   return {
-    validationError,
-    create,
-    getProfiles,
-    profiles,
+    saleForm,
+    createState,
   }
 }

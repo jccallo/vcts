@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { useLogout } from '@/modules/auth/composables'
-import { useAuthSessionStore } from '@/modules/auth/stores';
 
-const authSession = useAuthSessionStore()
-const { isLoading, logout } = useLogout()
+const { user, isLoading, logout } = useLogout()
 </script>
 
 <template>
@@ -45,7 +43,6 @@ const { isLoading, logout } = useLogout()
         </div>
       </li>
       
-      
       <!-- User Dropdown-->
       <li class="nav-item dropdown no-caret dropdown-user me-3 me-lg-4">
         <a class="btn btn-icon btn-transparent-dark dropdown-toggle" id="navbarDropdownUserImage"
@@ -56,8 +53,8 @@ const { isLoading, logout } = useLogout()
           <h6 class="dropdown-header d-flex align-items-center">
             <img class="dropdown-user-img" src="../assets/img/illustrations/profiles/profile-1.png" />
             <div class="dropdown-user-details">
-              <div v-if="authSession.user" class="dropdown-user-details-name">{{ authSession.user.name }}</div>
-              <div v-if="authSession.user" class="dropdown-user-details-email">{{ authSession.user.email }}</div>
+              <div class="dropdown-user-details-name">{{ user.name }}</div>
+              <div class="dropdown-user-details-email">{{ user.email }}</div>
             </div>
           </h6>
           <div class="dropdown-divider"></div>

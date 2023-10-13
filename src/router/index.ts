@@ -1,4 +1,5 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
+import { useAuth } from '@/modules/auth/composables'
 import Module from '@/modules/Module.vue'
 
 import {
@@ -9,8 +10,6 @@ import {
   DashboardRoutes,
   BeneficiaryRoutes,
 } from '@/modules/routes'
-
-import { useAuthSessionStore } from '@/modules/auth/stores'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -39,26 +38,30 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const authSession = useAuthSessionStore()
+  const { getToken, getRememberToken, removeUser, removeTokens } = useAuth()
+  const loginRouteName = import.meta.env.VITE_LOGIN_ROUTE_NAME
+  const dashboardRouteName = import.meta.env.VITE_DASHBOARD_ROUTE_NAME
+
   const needsAuth = to.meta.requiresAuth
-  const token = authSession.getToken()
-  const remember_token = authSession.getRememberToken()
+  const token = getToken()
+  const remember_token = getRememberToken()
+  
   if (needsAuth) {
-    if (!token) {
-      authSession.remove()
-      next({ name: 'auth.login' })
-    } else next()
-  } else if (to.name === 'auth.login') {
-    if (!remember_token && !token) {
+    if (token) next()
+    else {
+      removeUser()
+      removeTokens()
+      next({ name: loginRouteName })
+    }
+  } else if (to.name === loginRouteName) {
+    if (remember_token && token) next({ name: dashboardRouteName })
+    else {
+      removeUser()
+      removeTokens()
       next()
-    } else if (!remember_token && token) {
-      authSession.remove()
-      next()
-    } else {
-      next({ name: 'dashboard.index' })
     }
   } else {
-    console.log('from:', from.fullPath)
+    console.error('from:', from.fullPath)
     next()
   }
 })

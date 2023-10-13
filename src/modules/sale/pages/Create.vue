@@ -1,51 +1,18 @@
 <script setup lang="ts">
-import { reactive, onMounted, watch, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Modal } from 'bootstrap'
-import { SaleForm } from '../interfaces'
-import {
-  useGetCustomers,
-  useGetCards,
-  useGetBeneficiaries,
-} from '../composables'
+import { useCreate } from '../composables'
+import type { Pluck } from '@/interfaces'
 
-const { beneficiaries, getBeneficiaries } = useGetBeneficiaries()
-const { customers, getCustomers } = useGetCustomers()
-const { cards, getCards } = useGetCards()
-
-const formData = reactive<SaleForm>({
-  branch_id: 0,
-  customer_id: '',
-  card_id: '',
-  beneficiary_id: '',
-  payment_method: '',
-  interest_free: '',
-  installments: '',
-  courtesy: '',
-  retailer: '',
-  certificates: [],
-  amount: '',
-  authorization: '',
-  observation: '',
-})
-
-watch(
-  () => formData.customer_id,
-  async () => {
-    formData.card_id = ''
-    if (formData.customer_id) await getCards(formData.customer_id)
-  }
-)
+const { createState, saleForm } = useCreate()
 
 const saleCreate = async () => {
   console.log('crear', 'crear')
 }
+
 const staticBackdrop = ref(null)
 
 onMounted(async () => {
-  await getBeneficiaries()
-  await getCustomers()
-  if (formData.customer_id) await getCards(formData.customer_id)
-
   if (staticBackdrop.value) {
     const modal = new Modal(staticBackdrop.value)
     modal.show()
@@ -105,7 +72,7 @@ onMounted(async () => {
                     class="form-control"
                     id="saleauthorization"
                     type="text"
-                    v-model="formData.authorization"
+                    v-model="saleForm.authorization"
                   />
                 </div>
 
@@ -113,19 +80,19 @@ onMounted(async () => {
                 <div class="col-md-8 mb-3">
                   <label class="small mb-1">Cliente</label>&nbsp;
                   <span
-                    class="badge bg-success text-white me-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                    class="badge bg-green-soft text-green me-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
                     style="cursor: pointer"
                   >
                     + Agregar
                   </span>
                   <v-select
                     id="clientInput"
-                    class="style-chooser"
+                    class="style-chooser jc-border-select"
                     placeholder="Seleccionar:"
-                    v-model="formData.customer_id"
-                    :options="customers"
-                    :reduce="(customer: any) => customer.id"
-                    label="fullname"
+                    v-model="saleForm.customer_id"
+                    :options="createState.customerNames"
+                    :reduce="(customer: Pluck) => customer.id"
+                    label="name"
                   />
                 </div>
               </div>
@@ -136,16 +103,17 @@ onMounted(async () => {
                 <div class="col-md-4 mb-3">
                   <label class="small mb-1">Medio de Pago</label>
                   <v-select
-                    class="style-chooser"
+                    class="style-chooser jc-border-select"
                     placeholder="Seleccionar:"
-                    v-model="formData.payment_method"
+                    v-model="saleForm.payment_method"
                     :options="[
-                      'Open Pay',
-                      'Mercado Pago',
-                      'Pago Efectivo',
-                      'POS',
-                      'Otros',
+                      {id: 1, name: 'Mercado Pago'},
+                      {id: 2, name: 'Pago Efectivo'},
+                      {id: 3, name: 'POS'},
+                      {id: 4, name: 'Otros'}
                     ]"
+                    :reduce="(method: any) => method.id"
+                    label="name"
                   />
                 </div>
 
@@ -153,18 +121,18 @@ onMounted(async () => {
                 <div class="col-md-8 mb-3">
                   <label class="small mb-1">Tajeta</label>&nbsp;
                   <span
-                    class="badge bg-success text-white me-2"
+                    class="badge bg-green-soft text-green me-2"
                     style="cursor: pointer"
                   >
                     + Agregar
                   </span>
                   <v-select
-                    class="style-chooser"
+                    class="style-chooser jc-border-select"
                     placeholder="Seleccionar:"
-                    v-model="formData.card_id"
-                    :options="cards"
-                    :reduce="(card: any) => card.id"
-                    label="fullname"
+                    v-model="saleForm.card_id"
+                    :options="createState.cardNames"
+                    :reduce="(card: Pluck) => card.id"
+                    label="name"
                   />
                 </div>
               </div>
@@ -178,7 +146,7 @@ onMounted(async () => {
                     class="form-control"
                     id="saleamount"
                     type="number"
-                    v-model="formData.amount"
+                    v-model="saleForm.amount"
                   />
                 </div>
 
@@ -190,7 +158,7 @@ onMounted(async () => {
                   <select
                     class="form-select"
                     id="saleinterestfree"
-                    v-model="formData.interest_free"
+                    v-model="saleForm.interest_free"
                   >
                     <option selected disabled>Seleccionar:</option>
                     <option value="Si">Si</option>
@@ -202,9 +170,9 @@ onMounted(async () => {
                 <div class="col-md-4 mb-3">
                   <label class="small mb-1">Número de Cuotas</label>
                   <v-select
-                    class="style-chooser"
+                    class="style-chooser jc-border-select"
                     placeholder="Seleccionar:"
-                    v-model="formData.installments"
+                    v-model="saleForm.installments"
                     :options="
                       Array.from({ length: 36 }, (_, index) => index + 1)
                     "
@@ -220,7 +188,7 @@ onMounted(async () => {
                   <select
                     class="form-select"
                     id="salecourtesy"
-                    v-model="formData.courtesy"
+                    v-model="saleForm.courtesy"
                   >
                     <option selected disabled>Seleccionar:</option>
                     <option value="Si">Si</option>
@@ -232,18 +200,18 @@ onMounted(async () => {
                 <div class="col-md-8 mb-3">
                   <label class="small mb-1">Beneficiario</label>&nbsp;
                   <span
-                    class="badge bg-success text-white me-2"
+                    class="badge bg-green-soft text-green me-2"
                     style="cursor: pointer"
                   >
                     + Agregar
                   </span>
                   <v-select
-                    class="style-chooser"
+                    class="style-chooser jc-border-select"
                     placeholder="Seleccionar:"
-                    v-model="formData.beneficiary_id"
-                    :options="beneficiaries"
-                    :reduce="(beneficiary: any) => beneficiary.id"
-                    label="fullname"
+                    v-model="saleForm.beneficiary_id"
+                    :options="createState.beneficiaryNames"
+                    :reduce="(beneficiary: Pluck) => beneficiary.id"
+                    label="name"
                   />
                 </div>
               </div>
@@ -254,9 +222,9 @@ onMounted(async () => {
                 <div class="col-md-4 mb-3">
                   <label class="small mb-1">Comercializadora</label>
                   <v-select
-                    class="style-chooser"
+                    class="style-chooser jc-border-select"
                     placeholder="Seleccionar:"
-                    v-model="formData.retailer"
+                    v-model="saleForm.retailer"
                     :options="['Visa International Club', 'Otros']"
                   />
                 </div>
@@ -266,9 +234,9 @@ onMounted(async () => {
                   <label class="small mb-1">Certificados</label>
                   <v-select
                     multiple
-                    class="style-chooser"
+                    class="style-chooser jc-border-select"
                     placeholder="Seleccionar:"
-                    v-model="formData.certificates"
+                    v-model="saleForm.certificates"
                     :options="[
                       '4 Certificados Nacionales',
                       '3 Certificados Nacionales',
@@ -292,7 +260,7 @@ onMounted(async () => {
                     type="text"
                     placeholder="Escriba sus observaciones..."
                     rows="2"
-                    v-model="formData.observation"
+                    v-model="saleForm.observation"
                   >
                   </textarea>
                 </div>
@@ -397,13 +365,13 @@ onMounted(async () => {
               </div>
             </div>
 
-            <pre>{{ formData }}</pre>
-            <!-- {{ formData.profile_id }} {{ typeof formData.profile_id }}
-            {{ formData.profile_id == 0 ? 'si' : 'no' }}
+            <pre>{{ saleForm }}</pre>
+            <!-- {{ saleForm.profile_id }} {{ typeof saleForm.profile_id }}
+            {{ saleForm.profile_id == 0 ? 'si' : 'no' }}
             <pre
-              >{{ formData }} {{ formData.customer_id }}-{{
-                formData.card_id
-              }}-{{ formData.beneficiary_id }}</pre
+              >{{ saleForm }} {{ saleForm.customer_id }}-{{
+                saleForm.card_id
+              }}-{{ saleForm.beneficiary_id }}</pre
             >
             <pre>customersPluck: {{ customersPluck }}</pre>
             <pre>cardsPluck: {{ cardsPluck }}</pre>
