@@ -1,12 +1,12 @@
 import { reactive } from 'vue';
-import type { Error, HttpResponse, Meta } from '@/interfaces';
+import type { Error, HttpResponse, ListState, Meta } from '@/interfaces';
 import type { Card } from '@/modules/card/interfaces';
 import { $http } from '@/services';
 
-const cardState = reactive({
-  list: [] as Card[],
+const cardState = reactive<ListState<Card>>({
+  list: [],
   meta: {} as Meta,
-  error: {} as Error | undefined,
+  error: undefined,
 })
 
 const setList = (list: Card[], meta: Meta) => {

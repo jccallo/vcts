@@ -2,7 +2,7 @@
 import { useAuth } from '../composables'
 import { Navbar, Footer } from '@/layouts'
 
-const { user, isAdmin, startAdminMode, startEmployeeMode } = useAuth()
+const { user, isAdmin, setActiveEmployee } = useAuth()
 </script>
 
 <template>
@@ -37,7 +37,6 @@ const { user, isAdmin, startAdminMode, startEmployeeMode } = useAuth()
                   <div class="small text-center">
                     <a
                       class="btn btn-block btn-primary"
-                      @click.prevent="startAdminMode"
                     >
                       Ingresar
                     </a>
@@ -66,12 +65,13 @@ const { user, isAdmin, startAdminMode, startEmployeeMode } = useAuth()
                 </div>
                 <div class="card-footer bg-transparent px-5 py-4">
                   <div class="small text-center">
-                    <a
+                    <button
                       class="btn btn-block btn-primary"
-                      @click.prevent="startEmployeeMode"
+                      :disabled="!employee.permissions.length"
+                      @click.prevent="setActiveEmployee(employee)"
                     >
                       Ingresar
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>

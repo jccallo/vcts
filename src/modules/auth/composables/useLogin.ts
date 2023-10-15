@@ -1,11 +1,15 @@
 import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
 import type { AuthResponse, LoginForm } from '../interfaces'
 import type { DataResponse, Error } from '@/interfaces'
 import { $http, $toast } from '@/services'
 import { useAuth } from '../composables'
 
+const accountsRouteName = import.meta.env.VITE_ACCOUNTS_ROUTE_NAME
+
 export const useLogin = () => {
-  const { setSession, redirectToAccounts } = useAuth()
+  const router = useRouter()
+  const { setSession } = useAuth()
 
   const loginForm = reactive<LoginForm>({
     email: '',
@@ -19,7 +23,7 @@ export const useLogin = () => {
       .then((response) => {
         $toast.success(response.data.message)
         setSession(response.data)
-        redirectToAccounts()
+        router.replace({ name: accountsRouteName })
       })
       .catch((error: Error) => $toast.error(error.message))
   }

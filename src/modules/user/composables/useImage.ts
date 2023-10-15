@@ -29,6 +29,7 @@ export const useImage = () => {
   }
 
   const onImageChange = (e: Event) => {
+    console.log('hola', 'hola')
     if (!imageState.input) imageState.input = e.target as HTMLInputElement
     imageState.file = imageState.input.files
       ? imageState.input.files[0]

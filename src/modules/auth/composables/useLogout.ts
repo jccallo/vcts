@@ -1,9 +1,13 @@
+import { useRouter } from 'vue-router'
 import type { DataResponse, Error } from '@/interfaces'
 import { $http, $toast } from '@/services'
 import { useAuth } from '../composables'
 
+const loginRouteName = import.meta.env.VITE_LOGIN_ROUTE_NAME
+
 export const useLogout = () => {
-  const { user, redirectToLogin, removeSession } = useAuth()
+  const router = useRouter()
+  const { removeSession } = useAuth()
 
   const logout = async () => {
     await $http
@@ -11,18 +15,17 @@ export const useLogout = () => {
       .then((response) => {
         $toast.success(response.data)
         removeSession()
-        redirectToLogin()
+        router.replace({ name: loginRouteName })
       })
       .catch((error: Error) => {
         $toast.error(error.message)
         removeSession()
-        redirectToLogin()
+        router.replace({ name: loginRouteName })
       })
   }
 
   return {
     isLoading: $http.isLoading,
-    user,
     logout,
   }
 }

@@ -1,28 +1,15 @@
 <script setup lang="ts">
-import { useLogout, useAccess } from '@/modules/auth/composables'
+import { useLogout, useAccess, useAuth } from '@/modules/auth/composables'
 import { NavLinkCollapsed, NavLink } from '@/components/NavLink'
 import { onMounted } from 'vue'
 
-const { user, isLoading, logout } = useLogout()
-const { can } = useAccess()
+const { user } = useAuth()
+const { logout } = useLogout()
+const { checkAccess } = useAccess()
 
 onMounted(() => {
-  var elementos = document.querySelectorAll('.forAddActive')
-
-  elementos.forEach(function (elemento) {
-    elemento.classList.add('active')
-  })
-
-  console.log('sss', can('op.index'))
+  console.log('sss', checkAccess('op.index'))
 })
-
-
-const mifun = (argumento: number, arg: string) => {
-  return () => {
-    // Lógica para realizar una acción con el argumento cuando se hace clic en el enlace
-    console.log('Acción realizada con el argumento:', argumento, arg);
-  }
-}
 </script>
 
 <template>
@@ -31,31 +18,35 @@ const mifun = (argumento: number, arg: string) => {
       <div class="nav accordion" id="accordionSidenav">
         <!-- Sidenav Menu Heading (Account)-->
         <!-- * * Note: * * Visible only on and above the sm breakpoint-->
-        <div class="sidenav-menu-heading d-sm-none">Cuenta</div>
+        <!-- <div class="sidenav-menu-heading d-sm-none">Cuenta</div> -->
+
         <!-- Sidenav Link (Alerts)-->
         <!-- * * Note: * * Visible only on and above the sm breakpoint-->
-        <a class="nav-link d-sm-none" href="#!">
+        <!-- <a class="nav-link d-sm-none" href="#!">
           <div class="nav-link-icon"><i data-feather="bell"></i></div>
           Alertas
           <span class="badge bg-warning-soft text-warning ms-auto">4 New!</span>
-        </a>
+        </a> -->
+
         <!-- Sidenav Link (Messages)-->
         <!-- * * Note: * * Visible only on and above the sm breakpoint-->
-        <a class="nav-link d-sm-none" href="#!">
+        <!-- <a class="nav-link d-sm-none" href="#!">
           <div class="nav-link-icon"><i data-feather="mail"></i></div>
           Mensajes
           <span class="badge bg-success-soft text-success ms-auto">2 New!</span>
-        </a>
+        </a> -->
 
+        <!--------------------------- Sede ---------------------------->
         <div class="sidenav-menu-heading">Sede los Olivos</div>
 
-        <!--------------------------- Escritorio ---------------------------->
+        <!-- Escritorio -->
         <NavLink title="Escritorio" feather-icon="activity" :go="{ name: 'dashboard.index' }" />
-        <!--------------------------- fin de Escritorio ---------------------------->
+        <!--------------------------- fin de Sede ---------------------------->
 
+        <!--------------------------- Mantenimientos ---------------------------->
         <div class="sidenav-menu-heading">Mantenimientos</div>
 
-        <!--------------------------- Usuarios ---------------------------->
+        <!-- Usuarios -->
         <NavLinkCollapsed
           id="users"
           title="Usuarios"
@@ -66,9 +57,8 @@ const mifun = (argumento: number, arg: string) => {
           <NavLink title="Lista de Usuarios" :go="{ name: 'users.index' }" />
           <NavLink title="Agregar Usuarios" :go="{ name: 'users.create' }" />
         </NavLinkCollapsed>
-        <!--------------------------- fin de Usuarios ---------------------------->
 
-        <!--------------------------- Clientes ---------------------------->
+        <!-- Clientes -->
         <NavLinkCollapsed
           id="customers"
           title="Clientes"
@@ -79,7 +69,6 @@ const mifun = (argumento: number, arg: string) => {
           <NavLink title="Lista de Clientes" :go="{ name: 'customers.index' }" />
           <NavLink title="Agregar Clientes" :go="{ name: 'customers.index' }" />
         </NavLinkCollapsed>
-        <!--------------------------- fin de Clientes ---------------------------->
 
         <!-- Beneficiarios -->
         <a
@@ -318,10 +307,10 @@ const mifun = (argumento: number, arg: string) => {
           </nav>
         </div>
 
-        <!-- Modulos-->
+        <!--------------------------- Transacciones ---------------------------->
         <div class="sidenav-menu-heading">Transacciones</div>
 
-        <!--------------------------- Ventas ---------------------------->
+        <!-- Ventas -->
         <NavLinkCollapsed
           id="sales"
           title="Ventas"
@@ -332,7 +321,7 @@ const mifun = (argumento: number, arg: string) => {
           <NavLink title="Lista de Ventas" :go="{ name: 'sales.index' }" />
           <NavLink title="Agregar Venta" :go="{ name: 'sales.create' }" />
         </NavLinkCollapsed>
-        <!--------------------------- fin de Ventas ---------------------------->
+        <!--------------------------- fin de Transacciones ---------------------------->
 
         <!--------------------------- Usuario ---------------------------->
         <div class="sidenav-menu-heading">Usuario</div>
@@ -345,31 +334,8 @@ const mifun = (argumento: number, arg: string) => {
 
         <!-- Salir -->
         <NavLink title="Salir" feather-icon="log-out" :callback="logout" />
-        <span class="nav-link" :disabled="isLoading" @click.stop="logout">
-          <div class="nav-link-icon">
-            <vue-feather type="log-out" size="16"></vue-feather>
-          </div>
-          Salir
-        </span>
         <!--------------------------- fin de Usuario ---------------------------->
 
-        <NavLinkCollapsed
-          id="holaid"
-          title="holatitle"
-          resource="users"
-          feather-icon="home"
-          :has-accordion="true"
-        >
-          <NavLinkCollapsed
-            id="aaaa"
-            title="aaaaa"
-            resource="users"
-            feather-icon="users"
-            :has-accordion="false"
-          >
-            <NavLink title="Cards" badge-title="Updated" feather-icon="users" :callback="mifun(34, 'jholaaa')" />
-          </NavLinkCollapsed>
-        </NavLinkCollapsed>
       </div>
     </div>
     <!-- Sidenav Footer-->

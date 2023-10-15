@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { useLogout } from '@/modules/auth/composables'
+import { onMounted } from 'vue';
 import { useRoute } from 'vue-router'
+import { useAuth, useLogout } from '@/modules/auth/composables'
 
-const { user, isLoading, logout } = useLogout()
 const route = useRoute()
+const { user, imagePath, loadImage } = useAuth()
+const { isLoading, logout } = useLogout()
+
+onMounted(async() => {
+  await loadImage()
+})
 
 const isAuthAccounts = route.name === 'auth.accounts'
 </script>
@@ -93,8 +99,9 @@ const isAuthAccounts = route.name === 'auth.accounts'
           aria-expanded="false"
         >
           <img
+            v-if="imagePath"
             class="img-fluid"
-            src="../assets/img/illustrations/profiles/profile-1.png"
+            :src="imagePath"
           />
         </a>
         <div
@@ -103,8 +110,9 @@ const isAuthAccounts = route.name === 'auth.accounts'
         >
           <h6 class="dropdown-header d-flex align-items-center">
             <img
+              v-if="imagePath"
               class="dropdown-user-img"
-              src="../assets/img/illustrations/profiles/profile-1.png"
+              :src="imagePath"
             />
             <div class="dropdown-user-details">
               <div class="dropdown-user-details-name">{{ user.name }}</div>

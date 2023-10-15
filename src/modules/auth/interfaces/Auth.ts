@@ -11,6 +11,7 @@ export interface AuthUser {
   id: number
   email: string
   name: string
+  photo_path: string | null
   admin: string
   employees: AuthEmployee[]
 }
@@ -25,6 +26,7 @@ export interface AuthEmployee {
 export interface AuthState {
   user: AuthUser
   isAdmin: boolean
+  imagePath: string,
   hasActiveEmployee: boolean
   activeEmployee: AuthEmployee
 }

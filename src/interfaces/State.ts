@@ -7,8 +7,14 @@ export interface State<T = any> {
   error?: Error
 }
 
-export interface SingleState<T = any> {
+export interface InstanceState<T = any> {
   instance: T
+  meta: Meta
+  error?: Error
+}
+
+export interface ListState<T = any> {
+  list: T[]
   meta: Meta
   error?: Error
 }

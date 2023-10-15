@@ -1,13 +1,13 @@
 import { reactive } from 'vue'
 import { $http } from '@/services'
-import type { DataResponse, Error, HttpResponse, Meta } from '@/interfaces'
+import type { DataResponse, Error, HttpResponse, Meta, State } from '@/interfaces'
 import type { Beneficiary } from '../interfaces'
 
-const beneficiaryState = reactive({
-  list: [] as Beneficiary[],
+const beneficiaryState = reactive<State<Beneficiary>>({
+  list: [],
   instance: {} as Beneficiary,
   meta: {} as Meta,
-  error: {} as Error | undefined,
+  error: undefined,
 })
 
 const setList = (list: Beneficiary[], meta: Meta) => {

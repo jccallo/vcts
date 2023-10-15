@@ -5,6 +5,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => <AuthState>({
     user: {} as AuthUser,
     isAdmin: false,
+    imagePath: '',
     hasActiveEmployee: false,
     activeEmployee: {} as AuthEmployee
   }),
@@ -25,6 +26,12 @@ export const useAuthStore = defineStore('auth', {
       this.activeEmployee = {} as AuthEmployee
       this.hasActiveEmployee = false
     },
+    setImagePath(path: string) {
+      this.imagePath = path
+    },
+    removeImagePath() {
+      this.imagePath = ''
+    }
   },
   persist: true,
 })
