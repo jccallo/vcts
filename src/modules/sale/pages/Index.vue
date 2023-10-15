@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useDatatable } from '@/composables'
-import { Sale } from '@/interfaces';
 
 import {
   Info,
@@ -11,6 +10,7 @@ import {
   DeleteLink,
   ShowLink,
 } from '@/components/Datatable'
+import { Sale } from '../interfaces';
 
 const {
   data: sales,

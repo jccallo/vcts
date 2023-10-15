@@ -5,7 +5,7 @@ import type { Sale } from '../interfaces'
 
 const saleState = reactive<State<Sale>>({
   list: [],
-  data: {} as Sale,
+  instance: {} as Sale,
   meta: {} as Meta,
   error: undefined,
 })
@@ -16,8 +16,8 @@ const setList = (list: Sale[], meta: Meta) => {
   saleState.error = undefined
 }
 
-const setData = (data: Sale) => {
-  saleState.data = data
+const setInstance = (instance: Sale) => {
+  saleState.instance = instance
   saleState.error = undefined
 }
 
@@ -32,7 +32,7 @@ export const useSale = () => {
     await $http
       .post<DataResponse<Sale>>(`/${resource}`, form)
       .then((response) => {
-        setData(response.data)
+        setInstance(response.data)
       })
       .catch((error: Error) => {
         setError(error)
@@ -43,7 +43,7 @@ export const useSale = () => {
     await $http
       .put<DataResponse<Sale>>(`/${resource}/${id}`, form)
       .then((response) => {
-        setData(response.data)
+        setInstance(response.data)
       })
       .catch((error: Error) => {
         setError(error)
@@ -54,7 +54,7 @@ export const useSale = () => {
     await $http
       .delete<DataResponse<Sale>>(`/${resource}/${id}`)
       .then((response) => {
-        setData(response.data)
+        setInstance(response.data)
       })
       .catch((error: Error) => {
         setError(error)
@@ -65,7 +65,7 @@ export const useSale = () => {
     await $http
       .get<DataResponse<Sale>>(`/${resource}/${id}`)
       .then((response) => {
-        setData(response.data)
+        setInstance(response.data)
       })
       .catch((error: Error) => {
         setError(error)

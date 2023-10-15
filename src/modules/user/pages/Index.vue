@@ -107,7 +107,7 @@ onMounted(async () => {
                   v-for="user in users"
                   :key="user.id"
                 >
-                  <td>{{ user.email }}</td>
+                  <td>{{ user.name }}</td>
                   <td>{{ user.email }}</td>
                   <td><UserType :is-admin="user.admin" /></td>
                   <td><StatusType :is-active="user.status" /></td>

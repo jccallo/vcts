@@ -11,6 +11,9 @@ import {
   BeneficiaryRoutes,
 } from '@/modules/routes'
 
+const loginRouteName = import.meta.env.VITE_LOGIN_ROUTE_NAME
+const accountsRouteName = import.meta.env.VITE_ACCOUNTS_ROUTE_NAME
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/app',
@@ -38,31 +41,39 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const { getToken, getRememberToken, removeUser, removeTokens } = useAuth()
-  const loginRouteName = import.meta.env.VITE_LOGIN_ROUTE_NAME
-  const dashboardRouteName = import.meta.env.VITE_DASHBOARD_ROUTE_NAME
+  const { isAdmin, hasActiveEmployee, getToken, getRememberToken, removeSession } = useAuth()
 
   const needsAuth = to.meta.requiresAuth
   const token = getToken()
-  const remember_token = getRememberToken()
-  
+  const rememberToken = getRememberToken()
+
+  console.log('yyyy', hasActiveEmployee.value)
+  console.log('to', to)
+  console.log('from', from)
+
   if (needsAuth) {
-    if (token) next()
-    else {
-      removeUser()
-      removeTokens()
-      next({ name: loginRouteName })
-    }
-  } else if (to.name === loginRouteName) {
-    if (remember_token && token) next({ name: dashboardRouteName })
-    else {
-      removeUser()
-      removeTokens()
-      next()
+    if (to.name === accountsRouteName) {
+      if (token) next()
+      else {
+        removeSession()
+        next({ name: loginRouteName })
+      }
+    } else {
+      if ((hasActiveEmployee || isAdmin) && token) next()
+      else {
+        removeSession()
+        next({ name: loginRouteName })
+      }
     }
   } else {
-    console.error('from:', from.fullPath)
-    next()
+    if (rememberToken && token) {
+      if (from.name) next({ name: from.name })
+      else next({ name: accountsRouteName })
+    }
+    else {
+      removeSession()
+      next()
+    }
   }
 })
 

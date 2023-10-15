@@ -3,28 +3,26 @@ import { $http, $toast } from '@/services'
 import { useAuth } from '../composables'
 
 export const useLogout = () => {
-  const { user, redirectToLogin, removeUser, removeTokens } = useAuth()
+  const { user, redirectToLogin, removeSession } = useAuth()
 
   const logout = async () => {
     await $http
       .delete<DataResponse<string>>('/logout')
       .then((response) => {
         $toast.success(response.data)
-        removeUser()
-        removeTokens()
+        removeSession()
         redirectToLogin()
       })
       .catch((error: Error) => {
         $toast.error(error.message)
-        removeUser()
-        removeTokens()
+        removeSession()
         redirectToLogin()
       })
   }
 
   return {
-    user,
     isLoading: $http.isLoading,
+    user,
     logout,
   }
 }

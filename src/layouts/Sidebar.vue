@@ -1,8 +1,28 @@
 <script setup lang="ts">
-import { useLogout } from '@/modules/auth/composables'
-import { $helper } from '@/services';
+import { useLogout, useAccess } from '@/modules/auth/composables'
+import { NavLinkCollapsed, NavLink } from '@/components/NavLink'
+import { onMounted } from 'vue'
 
 const { user, isLoading, logout } = useLogout()
+const { can } = useAccess()
+
+onMounted(() => {
+  var elementos = document.querySelectorAll('.forAddActive')
+
+  elementos.forEach(function (elemento) {
+    elemento.classList.add('active')
+  })
+
+  console.log('sss', can('op.index'))
+})
+
+
+const mifun = (argumento: number, arg: string) => {
+  return () => {
+    // Lógica para realizar una acción con el argumento cuando se hace clic en el enlace
+    console.log('Acción realizada con el argumento:', argumento, arg);
+  }
+}
 </script>
 
 <template>
@@ -27,92 +47,39 @@ const { user, isLoading, logout } = useLogout()
           <span class="badge bg-success-soft text-success ms-auto">2 New!</span>
         </a>
 
-        <!-- Sede -->
         <div class="sidenav-menu-heading">Sede los Olivos</div>
 
-        <!-- Dashboard -->
-        <router-link
-          :to="{ name: 'dashboard.index' }"
-          class="nav-link"
-          href="charts.html"
-        >
-          <div class="nav-link-icon">
-            <vue-feather type="activity" size="16"></vue-feather>
-          </div>
-          Dashboard
-        </router-link>
+        <!--------------------------- Escritorio ---------------------------->
+        <NavLink title="Escritorio" feather-icon="activity" :go="{ name: 'dashboard.index' }" />
+        <!--------------------------- fin de Escritorio ---------------------------->
 
-        <!-- Modulos-->
-        <div class="sidenav-menu-heading">Mantenimiento</div>
+        <div class="sidenav-menu-heading">Mantenimientos</div>
 
-        <!-- Empleados-->
-        <a
-          class="nav-link collapsed"
-          data-bs-toggle="collapse"
-          data-bs-target="#collapseEmployees"
-          aria-expanded="false"
-          aria-controls="collapseEmployees"
-          :class="$helper.setActiveClass('users')"
+        <!--------------------------- Usuarios ---------------------------->
+        <NavLinkCollapsed
+          id="users"
+          title="Usuarios"
+          resource="users"
+          feather-icon="users"
+          :has-accordion="false"
         >
-          <div class="nav-link-icon">
-            <vue-feather type="users" size="16"></vue-feather>
-          </div>
-          Usuarios
-          <div class="sidenav-collapse-arrow">
-            <i class="fas fa-angle-down"></i>
-          </div>
-        </a>
-        <div
-          class="collapse"
-          id="collapseEmployees"
-          data-bs-parent="#accordionSidenav"
-        >
-          <nav
-            class="sidenav-menu-nested nav accordion"
-            id="accordionSidenavPagesMenu"
-          >
-            <router-link :to="{ name: 'users.index' }" class="nav-link"
-              >Lista de Usuarios</router-link
-            >
-            <router-link :to="{ name: 'users.create' }" class="nav-link"
-              >Agregar Usuarios</router-link
-            >
-          </nav>
-        </div>
+          <NavLink title="Lista de Usuarios" :go="{ name: 'users.index' }" />
+          <NavLink title="Agregar Usuarios" :go="{ name: 'users.create' }" />
+        </NavLinkCollapsed>
+        <!--------------------------- fin de Usuarios ---------------------------->
 
-        <!-- clientes-->
-        <a
-          class="nav-link collapsed"
-          href="javascript:void(0);"
-          data-bs-toggle="collapse"
-          data-bs-target="#collapseCustomers"
-          aria-expanded="false"
-          aria-controls="collapseCustomers"
-          :class="$helper.setActiveClass('customers')"
+        <!--------------------------- Clientes ---------------------------->
+        <NavLinkCollapsed
+          id="customers"
+          title="Clientes"
+          resource="customers"
+          feather-icon="users"
+          :has-accordion="false"
         >
-          <div class="nav-link-icon">
-            <vue-feather type="users" size="16"></vue-feather>
-          </div>
-          Clientes
-          <div class="sidenav-collapse-arrow">
-            <i class="fas fa-angle-down"></i>
-          </div>
-        </a>
-        <div
-          class="collapse"
-          id="collapseCustomers"
-          data-bs-parent="#accordionSidenav"
-        >
-          <nav
-            class="sidenav-menu-nested nav accordion"
-            id="accordionSidenavPagesMenu"
-          >
-            <router-link :to="{ name: 'customers.index' }" class="nav-link"
-              >Lista de Clientes</router-link
-            >
-            <a class="nav-link" href="invoice.html">Agregar Cliente</a>
-          </nav>
-        </div>
+          <NavLink title="Lista de Clientes" :go="{ name: 'customers.index' }" />
+          <NavLink title="Agregar Clientes" :go="{ name: 'customers.index' }" />
+        </NavLinkCollapsed>
+        <!--------------------------- fin de Clientes ---------------------------->
 
         <!-- Beneficiarios -->
         <a
@@ -354,58 +321,55 @@ const { user, isLoading, logout } = useLogout()
         <!-- Modulos-->
         <div class="sidenav-menu-heading">Transacciones</div>
 
-        <!-- Ventas-->
-        <a
-          class="nav-link collapsed"
-          href="javascript:void(0);"
-          data-bs-toggle="collapse"
-          data-bs-target="#collapseSales"
-          aria-expanded="false"
-          aria-controls="collapseSales"
-          :class="$helper.setActiveClass('sales')"
+        <!--------------------------- Ventas ---------------------------->
+        <NavLinkCollapsed
+          id="sales"
+          title="Ventas"
+          resource="sales"
+          feather-icon="shopping-cart"
+          :has-accordion="false"
         >
-          <div class="nav-link-icon">
-            <vue-feather type="shopping-cart" size="16"></vue-feather>
-          </div>
-          Ventas
-          <div class="sidenav-collapse-arrow">
-            <i class="fas fa-angle-down"></i>
-          </div>
-        </a>
-        <div
-          class="collapse"
-          id="collapseSales"
-          data-bs-parent="#accordionSidenav"
-        >
-          <nav
-            class="sidenav-menu-nested nav accordion"
-            id="accordionSidenavPagesMenu"
-          >
-            <router-link :to="{ name: 'sales.index' }" class="nav-link"
-              >Lista de Ventas</router-link
-            >
-            <router-link :to="{ name: 'sales.create' }" class="nav-link"
-              >Agregar Venta</router-link
-            >
-          </nav>
-        </div>
+          <NavLink title="Lista de Ventas" :go="{ name: 'sales.index' }" />
+          <NavLink title="Agregar Venta" :go="{ name: 'sales.create' }" />
+        </NavLinkCollapsed>
+        <!--------------------------- fin de Ventas ---------------------------->
 
-        <!-- Usuario -->
+        <!--------------------------- Usuario ---------------------------->
         <div class="sidenav-menu-heading">Usuario</div>
-        <!-- Sidenav Link (Charts)-->
-        <a class="nav-link" href="charts.html">
+
+        <!-- Cuentas -->
+        <NavLink title="Cuentas" feather-icon="users" :go="{ name: 'auth.accounts' }" />
+
+        <!-- Perfil -->
+        <NavLink title="Perfil" feather-icon="settings" :go="{ name: 'auth.accounts' }" />
+
+        <!-- Salir -->
+        <NavLink title="Salir" feather-icon="log-out" :callback="logout" />
+        <span class="nav-link" :disabled="isLoading" @click.stop="logout">
           <div class="nav-link-icon">
-            <vue-feather type="bar-chart" size="16"></vue-feather>
-          </div>
-          Perfil
-        </a>
-        <!-- Sidenav Link (Tables)-->
-        <span class="nav-link" style="cursor: pointer" :disabled="isLoading" @click.stop="logout">
-          <div class="nav-link-icon">
-            <vue-feather type="filter" size="16"></vue-feather>
+            <vue-feather type="log-out" size="16"></vue-feather>
           </div>
           Salir
         </span>
+        <!--------------------------- fin de Usuario ---------------------------->
+
+        <NavLinkCollapsed
+          id="holaid"
+          title="holatitle"
+          resource="users"
+          feather-icon="home"
+          :has-accordion="true"
+        >
+          <NavLinkCollapsed
+            id="aaaa"
+            title="aaaaa"
+            resource="users"
+            feather-icon="users"
+            :has-accordion="false"
+          >
+            <NavLink title="Cards" badge-title="Updated" feather-icon="users" :callback="mifun(34, 'jholaaa')" />
+          </NavLinkCollapsed>
+        </NavLinkCollapsed>
       </div>
     </div>
     <!-- Sidenav Footer-->

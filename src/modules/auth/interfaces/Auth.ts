@@ -12,18 +12,19 @@ export interface AuthUser {
   email: string
   name: string
   admin: string
-  employees?: AuthEmployee[]
+  employees: AuthEmployee[]
 }
 
 export interface AuthEmployee {
+  id: number
   branch: Pluck
   role: Pluck 
   permissions: Pluck[]
 }
 
-export interface AuthSession {
-  message: string
-  token: string
-  isRemember: boolean
-  user?: AuthUser
+export interface AuthState {
+  user: AuthUser
+  isAdmin: boolean
+  hasActiveEmployee: boolean
+  activeEmployee: AuthEmployee
 }

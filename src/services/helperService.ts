@@ -10,6 +10,11 @@ class HelperService {
   setActiveClass(resource: string) {
     return useRoute().name?.toString().split('.')[0] === resource ? 'active' : ''
   }
+
+  isAccountsRouteName() {
+    return useRoute().name === import.meta.env.VITE_ACCOUNTS_ROUTE_NAME
+  }
+
 }
 
 const helperService = new HelperService()
