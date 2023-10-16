@@ -5,9 +5,9 @@ import axios, {
   AxiosRequestConfig,
   AxiosResponse,
 } from 'axios'
+import type { Error, ErrorResponse, ValidationError } from '@/interfaces'
 import { ProgressFinisher, useProgress } from '@marcoschulte/vue3-progress'
-import { Error, ErrorResponse, ValidationError } from '@/interfaces'
-import { useAuth } from '@/modules/auth/composables'
+import { useAuth, useToken, useConstant, useRedirect } from '@/modules/auth/composables'
 
 class HttpService {
   private axiosInstance: AxiosInstance
@@ -38,7 +38,7 @@ class HttpService {
   private updateHeader(config: any) {
     // falta tipear por tiempo
     // const token = $storage.get($storage.TOKEN)
-    const token = useAuth().getToken()
+    const token = useToken().getToken()
     console.log('token', token)
     if (token) config.headers['Authorization'] = `Bearer ${token}`
     return config
@@ -51,7 +51,8 @@ class HttpService {
       return Promise.reject<Error>({ message: 'Error desconocido' })
     } else if (typeof error.response.data.error === 'string') {
       if (error.response.data.error === import.meta.env.VITE_UNAUTHENTICATED)
-        useAuth().redirectToLogin()
+        useAuth().removeSession()
+        useRedirect().redirectTo(useConstant().LOGIN_ROUTE_NAME)
       return Promise.reject<Error>({ message: error.response.data.error })
     } else if (typeof error.response.data.error === 'object') {
       return Promise.reject<Error>({
@@ -70,7 +71,7 @@ class HttpService {
         return this.updateHeader(config)
       },
       (error: AxiosError<ErrorResponse>) => {
-        console.error('Request AxiosError', error)
+        // console.error('Request AxiosError', error)
         this.progressFinish()
         return this.handleError(error)
       }
@@ -78,12 +79,12 @@ class HttpService {
 
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse) => {
-        console.log('Response AxiosResponse', response)
+        // console.log('Response AxiosResponse', response)
         this.progressFinish()
         return response
       },
       (error: AxiosError<ErrorResponse>) => {
-        console.error('Response AxiosError', error)
+        // console.error('Response AxiosError', error)
         this.progressFinish()
         return this.handleError(error)
       }

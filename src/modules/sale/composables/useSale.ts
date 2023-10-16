@@ -89,6 +89,6 @@ export const useSale = () => {
     updateSale,
     destroySale,
     getSale,
-    getSales
+    getSales,
   }
 }

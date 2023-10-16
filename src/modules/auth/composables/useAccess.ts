@@ -7,7 +7,8 @@ export const useAccess = () => {
   const permissions = ref<any[]>([])
 
   const getPermissions = () => {
-    permissions.value = activeEmployee.value.permissions.map((permission: Pluck) => permission.name)
+    // permissions.value = activeEmployee.value.permissions.map((permission: Pluck) => permission.name)
+    permissions.value = []
   }
 
   const checkAccess = (routeName: string) => {

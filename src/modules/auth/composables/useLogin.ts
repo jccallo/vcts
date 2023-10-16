@@ -1,36 +1,34 @@
 import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
 import type { AuthResponse, LoginForm } from '../interfaces'
 import type { DataResponse, Error } from '@/interfaces'
 import { $http, $toast } from '@/services'
-import { useAuth } from '../composables'
-
-const accountsRouteName = import.meta.env.VITE_ACCOUNTS_ROUTE_NAME
+import { useAuth, useConstant, useRedirect } from '../composables'
 
 export const useLogin = () => {
-  const router = useRouter()
-  const { setSession } = useAuth()
+   const { ACCOUNTS_ROUTE_NAME } = useConstant()
+   const { replaceWith } = useRedirect()
+   const { setSession } = useAuth()
 
-  const loginForm = reactive<LoginForm>({
-    email: '',
-    password: '',
-    isRemember: false,
-  })
+   const loginForm = reactive<LoginForm>({
+      email: '',
+      password: '',
+      isRemember: false,
+   })
 
-  const login = async () => {
-    await $http
-      .post<DataResponse<AuthResponse>>('/login', loginForm)
-      .then((response) => {
-        $toast.success(response.data.message)
-        setSession(response.data)
-        router.replace({ name: accountsRouteName })
-      })
-      .catch((error: Error) => $toast.error(error.message))
-  }
+   const login = async () => {
+      await $http
+         .post<DataResponse<AuthResponse>>('/login', loginForm)
+         .then((response) => {
+            $toast.success(response.data.message)
+            setSession(response.data)
+            replaceWith(ACCOUNTS_ROUTE_NAME)
+         })
+         .catch((error: Error) => $toast.error(error.message))
+   }
 
-  return {
-    isLoading: $http.isLoading,
-    loginForm,
-    login,
-  }
+   return {
+      isLoading: $http.isLoading,
+      loginForm,
+      login,
+   }
 }

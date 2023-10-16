@@ -3,11 +3,11 @@ export interface SaleForm {
   customer_id: string
   card_id: string
   beneficiary_id: string
-  payment_method: string
   interest_free: string
   installments: string
-  courtesy: string
-  retailer: string
+  payment_method_id: string
+  courtesy_id: string
+  retailer_id: string
   certificates: Array<string>
   amount: string
   authorization: string

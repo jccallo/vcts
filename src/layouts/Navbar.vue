@@ -99,7 +99,6 @@ const isAuthAccounts = route.name === 'auth.accounts'
           aria-expanded="false"
         >
           <img
-            v-if="imagePath"
             class="img-fluid"
             :src="imagePath"
           />
@@ -110,7 +109,6 @@ const isAuthAccounts = route.name === 'auth.accounts'
         >
           <h6 class="dropdown-header d-flex align-items-center">
             <img
-              v-if="imagePath"
               class="dropdown-user-img"
               :src="imagePath"
             />

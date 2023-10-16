@@ -1,23 +1,19 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { Modal } from 'bootstrap'
-import { useCreate } from '../composables'
+// import { onMounted, ref } from 'vue'
+// import { Modal } from 'bootstrap'
 import type { Pluck } from '@/interfaces'
+import { useCreate } from '../composables'
 
-const { createState, saleForm } = useCreate()
+const { isLoading, comboboxState, saleForm, saleState, saveSale } = useCreate()
 
-const saleCreate = async () => {
-  console.log('crear', 'crear')
-}
+// const staticBackdrop = ref(null)
 
-const staticBackdrop = ref(null)
-
-onMounted(async () => {
-  if (staticBackdrop.value) {
-    const modal = new Modal(staticBackdrop.value)
-    modal.show()
-  }
-})
+// onMounted(async () => {
+//   if (staticBackdrop.value) {
+//     const modal = new Modal(staticBackdrop.value)
+//     modal.show()
+//   }
+// })
 </script>
 
 <template>
@@ -90,7 +86,7 @@ onMounted(async () => {
                     class="style-chooser jc-border-select"
                     placeholder="Seleccionar:"
                     v-model="saleForm.customer_id"
-                    :options="createState.customerNames"
+                    :options="comboboxState.customerNames"
                     :reduce="(customer: Pluck) => customer.id"
                     label="name"
                   />
@@ -105,14 +101,9 @@ onMounted(async () => {
                   <v-select
                     class="style-chooser jc-border-select"
                     placeholder="Seleccionar:"
-                    v-model="saleForm.payment_method"
-                    :options="[
-                      {id: 1, name: 'Mercado Pago'},
-                      {id: 2, name: 'Pago Efectivo'},
-                      {id: 3, name: 'POS'},
-                      {id: 4, name: 'Otros'}
-                    ]"
-                    :reduce="(method: any) => method.id"
+                    v-model="saleForm.payment_method_id"
+                    :options="comboboxState.paymentMethodNames"
+                    :reduce="(paymentMethod: Pluck) => paymentMethod.id"
                     label="name"
                   />
                 </div>
@@ -130,7 +121,7 @@ onMounted(async () => {
                     class="style-chooser jc-border-select"
                     placeholder="Seleccionar:"
                     v-model="saleForm.card_id"
-                    :options="createState.cardNames"
+                    :options="comboboxState.cardNames"
                     :reduce="(card: Pluck) => card.id"
                     label="name"
                   />
@@ -155,15 +146,12 @@ onMounted(async () => {
                   <label class="small mb-1" for="saleinterestfree"
                     >Cuotas sin Intereses</label
                   >
-                  <select
-                    class="form-select"
-                    id="saleinterestfree"
+                  <v-select
+                    class="style-chooser jc-border-select"
+                    placeholder="Seleccionar:"
                     v-model="saleForm.interest_free"
-                  >
-                    <option selected disabled>Seleccionar:</option>
-                    <option value="Si">Si</option>
-                    <option value="No">No</option>
-                  </select>
+                    :options="['Si', 'No']"
+                  />
                 </div>
 
                 <!-- Form Group -->
@@ -173,9 +161,7 @@ onMounted(async () => {
                     class="style-chooser jc-border-select"
                     placeholder="Seleccionar:"
                     v-model="saleForm.installments"
-                    :options="
-                      Array.from({ length: 36 }, (_, index) => index + 1)
-                    "
+                    :options="Array.from({ length: 36 }, (_, index) => index + 1)"
                   />
                 </div>
               </div>
@@ -185,15 +171,14 @@ onMounted(async () => {
                 <!-- Form Group -->
                 <div class="col-md-4 mb-3">
                   <label class="small mb-1" for="salecourtesy">Cortesía</label>
-                  <select
-                    class="form-select"
-                    id="salecourtesy"
-                    v-model="saleForm.courtesy"
-                  >
-                    <option selected disabled>Seleccionar:</option>
-                    <option value="Si">Si</option>
-                    <option value="No">No</option>
-                  </select>
+                  <v-select
+                    class="style-chooser jc-border-select"
+                    placeholder="Seleccionar:"
+                    v-model="saleForm.courtesy_id"
+                    :options="comboboxState.courtesyNames"
+                    :reduce="(courtesy: Pluck) => courtesy.id"
+                    label="name"
+                  />
                 </div>
 
                 <!-- Form Group -->
@@ -209,7 +194,7 @@ onMounted(async () => {
                     class="style-chooser jc-border-select"
                     placeholder="Seleccionar:"
                     v-model="saleForm.beneficiary_id"
-                    :options="createState.beneficiaryNames"
+                    :options="comboboxState.beneficiaryNames"
                     :reduce="(beneficiary: Pluck) => beneficiary.id"
                     label="name"
                   />
@@ -224,8 +209,10 @@ onMounted(async () => {
                   <v-select
                     class="style-chooser jc-border-select"
                     placeholder="Seleccionar:"
-                    v-model="saleForm.retailer"
-                    :options="['Visa International Club', 'Otros']"
+                    v-model="saleForm.retailer_id"
+                    :options="comboboxState.retailerNames"
+                    :reduce="(retailer: Pluck) => retailer.id"
+                    label="name"
                   />
                 </div>
 
@@ -237,14 +224,9 @@ onMounted(async () => {
                     class="style-chooser jc-border-select"
                     placeholder="Seleccionar:"
                     v-model="saleForm.certificates"
-                    :options="[
-                      '4 Certificados Nacionales',
-                      '3 Certificados Nacionales',
-                      '2 Certificados Nacionales',
-                      '1 Certificados Nacionales',
-                      '2 Certificados Internacionales',
-                      '1 Certificados Internacionales',
-                    ]"
+                    :options="comboboxState.certificateNames"
+                    :reduce="(certificate: Pluck) => certificate.id"
+                    label="name"
                   />
                 </div>
               </div>
@@ -270,7 +252,8 @@ onMounted(async () => {
               <button
                 class="btn btn-primary"
                 type="button"
-                @click.stop="saleCreate"
+                :disabled="isLoading"
+                @click.prevent="saveSale"
               >
                 Agregar venta
               </button>
@@ -366,6 +349,7 @@ onMounted(async () => {
             </div>
 
             <pre>{{ saleForm }}</pre>
+            <pre>{{ saleState.error }}</pre>
             <!-- {{ saleForm.profile_id }} {{ typeof saleForm.profile_id }}
             {{ saleForm.profile_id == 0 ? 'si' : 'no' }}
             <pre
