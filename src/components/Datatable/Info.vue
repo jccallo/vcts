@@ -7,5 +7,5 @@ defineProps<{
 </script>
 
 <template>
-  <span> Mostrando {{ from }} a {{ to }} de {{ total }} entradas </span>
+  <span> Mostrando {{ from }} a {{ to }} de {{ total }} registros </span>
 </template>

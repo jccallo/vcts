@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { Link } from '../../interfaces'
-import { $helper } from '../../services'
+import { Link } from '@/interfaces'
+import { $helper } from '@/services'
 
 defineProps<{
   links: Link[]
-  page: string
   perpage: string
   query: string
+  field: string
+  direction: string
   routeName: string
 }>()
 
@@ -32,6 +33,8 @@ defineProps<{
           query: {
             page: $helper.getQueryParamValue('page', link.url) || '1',
             perpage: perpage,
+            field: field,
+            direction: direction,
             query: query,
           },
         }"

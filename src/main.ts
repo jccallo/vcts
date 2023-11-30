@@ -29,6 +29,7 @@ app.component(VueFeather.name, VueFeather)
 app.component('v-select', VueSelect)
 
 pinia.use(piniaPluginPersistedstate)
+
 app.use(pinia)
   .use(router)
   .use(Toast)

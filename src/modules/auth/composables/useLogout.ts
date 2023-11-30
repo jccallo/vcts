@@ -1,29 +1,25 @@
-import type { DataResponse, Error } from '@/interfaces'
-import { $http, $toast } from '@/services'
-import { useAuth, useConstant, useRedirect } from '../composables'
+import { $toast, $constant, $redirect, $api } from '@/services'
+import { useAuth } from '../composables'
 
 export const useLogout = () => {
-  const { LOGIN_ROUTE_NAME } = useConstant()
-  const { replaceWith } = useRedirect()
-  const { removeSession } = useAuth()
+   const { removeSession } = useAuth()
 
-  const logout = async () => {
-    await $http
-      .delete<DataResponse<string>>('/logout')
-      .then((response) => {
-        $toast.success(response.data)
-        removeSession()
-        replaceWith(LOGIN_ROUTE_NAME)
-      })
-      .catch((error: Error) => {
-        $toast.error(error.message)
-        removeSession()
-        replaceWith(LOGIN_ROUTE_NAME)
-      })
-  }
+   const logout = async () => {
+      const response = await $api.delete<string>('/logout')
+      if (response.data) {
+         removeSession()
+         $toast.success(response.data.data)
+         $redirect.replaceWith($constant.LOGIN_ROUTE_NAME)
+      }
+      if (response.error) {
+         removeSession()
+         $toast.error(response.error.message)
+         $redirect.replaceWith($constant.LOGIN_ROUTE_NAME)
+      }
+   }
 
-  return {
-    isLoading: $http.isLoading,
-    logout,
-  }
+   return {
+      isLoading: $api.isLoading,
+      logout,
+   }
 }

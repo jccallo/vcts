@@ -1,1 +1,5 @@
+export { default as Edit } from './Edit.vue'
 export { default as Index } from './Index.vue'
+export { default as CardCreate } from './CardCreate.vue'
+export { default as Create } from './Create.vue'
+export { default as Show } from './Show.vue'

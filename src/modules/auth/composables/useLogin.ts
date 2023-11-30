@@ -1,12 +1,9 @@
 import { reactive } from 'vue'
-import type { AuthResponse, LoginForm } from '../interfaces'
-import type { DataResponse, Error } from '@/interfaces'
-import { $http, $toast } from '@/services'
-import { useAuth, useConstant, useRedirect } from '../composables'
+import { $constant, $toast, $redirect, $api } from '@/services'
+import type { AuthResponse, LoginForm } from '@/interfaces'
+import { useAuth } from '../composables'
 
 export const useLogin = () => {
-   const { ACCOUNTS_ROUTE_NAME } = useConstant()
-   const { replaceWith } = useRedirect()
    const { setSession } = useAuth()
 
    const loginForm = reactive<LoginForm>({
@@ -16,18 +13,17 @@ export const useLogin = () => {
    })
 
    const login = async () => {
-      await $http
-         .post<DataResponse<AuthResponse>>('/login', loginForm)
-         .then((response) => {
-            $toast.success(response.data.message)
-            setSession(response.data)
-            replaceWith(ACCOUNTS_ROUTE_NAME)
-         })
-         .catch((error: Error) => $toast.error(error.message))
+      const response = await $api.post<AuthResponse>('/login', loginForm)
+      if (response.data) {
+         setSession(response.data.data)
+         $toast.success(response.data.data.message)
+         $redirect.replaceWith($constant.ACCOUNTS_ROUTE_NAME)
+      }
+      if (response.error) $toast.error(response.error.message)
    }
 
    return {
-      isLoading: $http.isLoading,
+      isLoading: $api.isLoading,
       loginForm,
       login,
    }

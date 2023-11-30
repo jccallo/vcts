@@ -3,6 +3,7 @@
 // import { Modal } from 'bootstrap'
 import type { Pluck } from '@/interfaces'
 import { useCreate } from '../composables'
+import { Modal } from '@/components/Modal';
 
 const { isLoading, comboboxState, saleForm, saleState, saveSale } = useCreate()
 
@@ -76,7 +77,7 @@ const { isLoading, comboboxState, saleForm, saleState, saveSale } = useCreate()
                 <div class="col-md-8 mb-3">
                   <label class="small mb-1">Cliente</label>&nbsp;
                   <span
-                    class="badge bg-green-soft text-green me-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                    class="badge bg-green-soft text-green me-2" data-bs-toggle="modal" data-bs-target="#customerModal"
                     style="cursor: pointer"
                   >
                     + Agregar
@@ -112,7 +113,7 @@ const { isLoading, comboboxState, saleForm, saleState, saveSale } = useCreate()
                 <div class="col-md-8 mb-3">
                   <label class="small mb-1">Tajeta</label>&nbsp;
                   <span
-                    class="badge bg-green-soft text-green me-2"
+                    class="badge bg-green-soft text-green me-2" data-bs-toggle="modal" data-bs-target="#cardModal"
                     style="cursor: pointer"
                   >
                     + Agregar
@@ -185,7 +186,7 @@ const { isLoading, comboboxState, saleForm, saleState, saveSale } = useCreate()
                 <div class="col-md-8 mb-3">
                   <label class="small mb-1">Beneficiario</label>&nbsp;
                   <span
-                    class="badge bg-green-soft text-green me-2"
+                    class="badge bg-green-soft text-green me-2" data-bs-toggle="modal" data-bs-target="#beneficiaryModal"
                     style="cursor: pointer"
                   >
                     + Agregar
@@ -268,85 +269,7 @@ const { isLoading, comboboxState, saleForm, saleState, saveSale } = useCreate()
               Launch Static Backdrop Modal
             </button>
 
-            <!-- Modal Customers -->
-            <div
-              class="modal fade"
-              id="staticBackdrop"
-              data-bs-backdrop="static"
-            >
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title">Agregar Nuevo Cliente</h5>
-                    <button
-                      class="btn-close"
-                      type="button"
-                      data-bs-dismiss="modal"
-                    ></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="row gx-3">
-                      <!-- Form Group -->
-                      <div class="col-12 mb-3">
-                        <label class="small mb-1">Nombres</label>
-                        <input
-                          class="form-control"
-                          type="text"
-                        />
-                      </div>
-
-                      <!-- Form Group -->
-                      <div class="col-12 mb-3">
-                        <label class="small mb-1">Apellidos</label>
-                        <input
-                          class="form-control"
-                          type="text"
-                        />
-                      </div>
-
-                      <!-- Form Group -->
-                      <div class="col-12 mb-3">
-                        <label class="small mb-1">N° de Documento</label>
-                        <input
-                          class="form-control"
-                          type="text"
-                        />
-                      </div>
-
-                      <!-- Form Group -->
-                      <div class="col-12 mb-3">
-                        <label class="small mb-1">Fecha de Nacimiento</label>
-                        <input
-                          class="form-control"
-                          type="text"
-                        />
-                      </div>
-
-                      <!-- Form Group -->
-                      <div class="col-12 mb-3">
-                        <label class="small mb-1">Telefono</label>
-                        <input
-                          class="form-control"
-                          type="text"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      class="btn btn-secondary"
-                      type="button"
-                      data-bs-dismiss="modal"
-                    >
-                      Cancelar
-                    </button>
-                    <button class="btn btn-primary" type="button">
-                      Agregar
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            
 
             <pre>{{ saleForm }}</pre>
             <pre>{{ saleState.error }}</pre>
@@ -366,4 +289,31 @@ const { isLoading, comboboxState, saleForm, saleState, saveSale } = useCreate()
       </div>
     </div>
   </div>
+
+  <Modal
+    id= "customerModal"
+    title="Agregar Cliente"
+    :backdrop="true"
+    size="lg"
+  >
+  Agregar Cliente
+  </Modal>
+
+  <Modal
+    id= "cardModal"
+    title="Agregar Tarjeta"
+    :backdrop="true"
+    size="lg"
+  >
+    Agregar Tarjeta
+  </Modal>
+
+  <Modal
+    id= "beneficiaryModal"
+    title="Agregar Beneficiario"
+    :backdrop="true"
+    size="lg"
+  >
+    Agregar Beneficiario
+  </Modal>
 </template>

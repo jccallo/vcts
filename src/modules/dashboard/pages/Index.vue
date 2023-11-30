@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { useAuth, useToken } from '@/modules/auth/composables'
+import { useAuth } from '@/modules/auth/composables'
+import { $token } from '@/services';
+
 const { user } = useAuth()
-const { getToken } = useToken()
 </script>
 
 <template>
@@ -57,7 +58,7 @@ const { getToken } = useToken()
             </div>
          </div>
       </div>
-      <pre>{{ getToken() }}</pre>
+      <pre>{{ $token.getToken() }}</pre>
       <pre>{{ user }}</pre>
    </div>
 </template>

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { useLogout, useAccess, useAuth } from '@/modules/auth/composables'
-import { NavLinkCollapsed, NavLink } from '@/components/NavLink'
 import { onMounted } from 'vue'
+import { useAccess } from '@/composables';
+import { useLogout, useAuth } from '@/modules/auth/composables'
+import { NavLinkCollapsed, NavLink } from '@/components/NavLink'
 
 const { user } = useAuth()
 const { logout } = useLogout()
@@ -67,43 +68,20 @@ onMounted(() => {
           :has-accordion="false"
         >
           <NavLink title="Lista de Clientes" :go="{ name: 'customers.index' }" />
-          <NavLink title="Agregar Clientes" :go="{ name: 'customers.index' }" />
+          <NavLink title="Agregar Clientes" :go="{ name: 'customers.create' }" />
         </NavLinkCollapsed>
 
         <!-- Beneficiarios -->
-        <a
-          class="nav-link collapsed"
-          href="javascript:void(0);"
-          data-bs-toggle="collapse"
-          data-bs-target="#collapseBeneficiaries"
-          aria-expanded="false"
-          aria-controls="collapseBeneficiaries"
+        <NavLinkCollapsed
+          id="beneficiaries"
+          title="Beneficiarios"
+          resource="beneficiaries"
+          feather-icon="users"
+          :has-accordion="false"
         >
-          <div class="nav-link-icon">
-            <vue-feather type="users" size="16"></vue-feather>
-          </div>
-          Beneficiarios
-          <div class="sidenav-collapse-arrow">
-            <i class="fas fa-angle-down"></i>
-          </div>
-        </a>
-        <div
-          class="collapse"
-          id="collapseBeneficiaries"
-          data-bs-parent="#accordionSidenav"
-        >
-          <nav
-            class="sidenav-menu-nested nav accordion"
-            id="accordionSidenavPagesMenu"
-          >
-            <router-link :to="{ name: 'dashboard.index' }" class="nav-link"
-              >Lista de Beneficiarios</router-link
-            >
-            <router-link :to="{ name: 'dashboard.index' }" class="nav-link"
-              >Agregar Beneficiario</router-link
-            >
-          </nav>
-        </div>
+          <NavLink title="Lista de Beneficiarios" :go="{ name: 'beneficiaries.index' }" />
+          <NavLink title="Agregar Beneficiario" :go="{ name: 'beneficiaries.create' }" />
+        </NavLinkCollapsed>
 
         <!-- Bancos -->
         <a

@@ -3,7 +3,7 @@ import Module from './Module.vue'
 
 const routes = [
   {
-    path: '',
+    path: 'dashboard',
     component: Module,
     children: [
       {

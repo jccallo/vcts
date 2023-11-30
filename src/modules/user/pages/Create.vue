@@ -207,8 +207,7 @@ const { validationErrors, userForm, imageState, onImageChange, createUser } = us
                   >Fecha de Nacimiento</label
                 >
                 <input
-                  style="padding-top: 0.75rem; padding-bottom: 0.75rem"
-                  class="form-control"
+                  class="form-control jc-date-input"
                   :class="{ 'is-invalid': validationErrors?.birthdate }"
                   id="inputLastName"
                   type="date"
